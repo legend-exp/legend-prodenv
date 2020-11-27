@@ -5,7 +5,7 @@ usage() {
 \echo >&2  "Usage: testenv-init [OPTIONS] PRODUCTION_TAG"
 \cat >&2 <<EOF
 
-This script initialize a new production cycle named username-PRODUCTION_TAG.
+This script initializes a new production cycle named username-PRODUCTION_TAG.
 PRODUCTION_TAG is a mandatory argument and should be parsed after the options. 
 
 Options:
