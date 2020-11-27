@@ -60,8 +60,8 @@ if [ -d "$PROD_ENV/$PRODUCTION_TAG/" ]; then
 fi
 
 # Create file system
-mkdir -p $PROD_ENV/$PRODUCTION_TAG/software/{inst,src}
-mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/{gen,meta}
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/software/{inst,src}
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/{gen,meta}
 
 # Create json config file
 \cat > ${PROD_ENV}/${PRODUCTION_TAG}/dataflow-config.json  <<EOF
@@ -84,7 +84,7 @@ EOF
 
 # Replace (FIXME: Oli, perhaps you find a way to do this in a nicer way)
 TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
-sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/dataflow-config.json
+\sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/dataflow-config.json
 
 # Install pygramma if path is empty
 if [ -z "${PYGAMMASRC}" ]; then
@@ -96,7 +96,7 @@ if [ -z "${PYGAMMASRC}" ]; then
    if [ -z "${PYGAMMABRC}" ]; then
       PYGAMMABRC="master"
    fi
-   git clone ${PYGAMMAURL} ${PROD_ENV}/${PRODUCTION_TAG}/software/src/pygamma --branch ${PYGAMMABRC}
+   \git clone ${PYGAMMAURL} ${PROD_ENV}/${PRODUCTION_TAG}/software/src/pygamma --branch ${PYGAMMABRC}
 fi
 
 echo "Done."
