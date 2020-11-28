@@ -17,6 +17,14 @@ exit 1;
 }
 
 ###############################################################################
+# Check whether the setup.sh has been already sourced
+###############################################################################
+if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
+   \echo "Error: source setup.sh before continuing.";
+   exit 1;
+fi
+
+###############################################################################
 # Actual script implemented as function to protect against users sourcing it
 ###############################################################################
 testenv-build() {
@@ -42,6 +50,8 @@ print(os.path.join(config_file_dir,target));
 export PYTHONPATH=$INST
 export PYTHONUSERBASE=$INST
 \python -m pip install -e $SRC/pygama
+
+echo "Done."
 }
 
 testenv-build "$@"

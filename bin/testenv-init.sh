@@ -26,6 +26,14 @@ exit 1;
 }
 
 ###############################################################################
+# Check whether the setup.sh has been already sourced
+###############################################################################
+if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
+   \echo "Error: source setup.sh before continuing.";
+   exit 1;
+fi
+
+###############################################################################
 # Actual script implemented as function to protect against users sourcing it
 ###############################################################################
 testenv-init() {
@@ -39,12 +47,6 @@ local PYGAMA_ORGANIZATION="legend-exp"
 local PYGAMA_BRANCH="master"
 local PYGAMA_PATH=""
 local PROD_ENV=${TESTENV_USERPROD}
-
-# Check whether the setup.sh has been already sourced
-if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
-   \echo "Error: source setup.sh before continuing.";
-   exit 1;
-fi
 
 # Parse options and overwrite the variable default value
 while getopts "p:u:b:rh:" options; do

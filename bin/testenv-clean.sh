@@ -19,6 +19,9 @@ exit 1;
 
 unset TESTENV_REFPROD
 unset TESTENV_USERPROD
+unset PYTHONPATH
+unset PYTHONUSERBASE
 
 echo "Warning: umask is set to "`\umask`". Fix it by hand if needed"
+echo "Warning: PYTHONPATH and PYTHONUSERBASE have been unset"
 echo "Done."
