@@ -12,10 +12,10 @@ This script initializes a new production cycle named PRODUCTION_TAG.
 PRODUCTION_TAG is a mandatory argument and should be parsed after the options. 
 
 Options:
-   -p    custom path to pygamma source directory. Install pygamma if not found
+   -p    custom path to pygama source directory. Install pygama if not found
          [default: new-production-cycle/software/src]
 
-   -o    set github organization pygamma is cloned from [default: legend-exp]
+   -o    set github organization pygama is cloned from [default: legend-exp]
 
    -b    set which branch to checkout [default: master]
 
@@ -35,9 +35,9 @@ testenv-init() {
 ###############################################################################
 
 # Set defaults
-local PYGAMMA_ORGANIZATION="legend-exp"
-local PYGAMMA_BRANCH="master"
-local PYGAMMA_PATH=""
+local PYGAMA_ORGANIZATION="legend-exp"
+local PYGAMA_BRANCH="master"
+local PYGAMA_PATH=""
 local PROD_ENV=${TESTENV_USERPROD}
 
 # Check whether the setup.sh has been already sourced
@@ -49,9 +49,9 @@ fi
 # Parse options and overwrite the variable default value
 while getopts "p:u:b:rh:" options; do
    case ${options} in
-      p) PYGAMMA_PATH=${OPTARG};;
-      u) PYGAMMA_ORGANIZATION=${OPTARG};;
-      b) PYGAMMA_BRANCH=${OPTARG};;
+      p) PYGAMA_PATH=${OPTARG};;
+      u) PYGAMA_ORGANIZATION=${OPTARG};;
+      b) PYGAMA_BRANCH=${OPTARG};;
       r) PROD_ENV=$TESTENV_REFPROD;;
       h) usage;;
    esac
@@ -82,15 +82,15 @@ fi
 \cat > ${PROD_ENV}/${PRODUCTION_TAG}/config.json  <<EOF
 {
   "setups": {
-    "routine-dev": {
+    "testenv": {
       "software": {
-        "src": "\$_/software/src",
-        "inst":"\$_/software/inst" 
+        "src": "./software/src",
+        "inst":"./software/inst" 
       },
       "data": {
-        "raw": "\$_/../../TESTENV_REFPROD_BASENAME/master/data/raw",
-        "gen": "\$_/data/gen",
-        "meta": "\$_/data/meta"
+        "raw":  "./../../TESTENV_REFPROD_BASENAME/master/data/raw",
+        "gen":  "./data/gen",
+        "meta": "./data/meta"
       }
     }
   }
@@ -103,11 +103,11 @@ TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
 \sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/config.json
 
 # Install pygramma if path is empty
-if [ -z "${PYGAMMA_PATH}" ]; then
+if [ -z "${PYGAMA_PATH}" ]; then
    \git clone \
-      git@github.com:${PYGAMMA_ORGANIZATION}/pygama.git \
-      ${PROD_ENV}/${PRODUCTION_TAG}/software/src/pygamma \
-      --branch ${PYGAMMA_BRANCH}
+      git@github.com:${PYGAMA_ORGANIZATION}/pygama.git \
+      ${PROD_ENV}/${PRODUCTION_TAG}/software/src/pygama \
+      --branch ${PYGAMA_BRANCH}
 fi
 
 echo "Done."
