@@ -30,7 +30,7 @@ fi
 testenv-build() {
 
 # Check mandatory arguments
-if [ -f "$1" ]; then
+if [ ! -f "$1" ]; then
    usage
 fi
 
