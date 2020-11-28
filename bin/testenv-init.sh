@@ -63,7 +63,7 @@ shift $((OPTIND - 1))
 # Get and test production tag
 PRODUCTION_TAG="$1"
 if [ -z "${PRODUCTION_TAG}" ]; then
-    usage
+   usage
 fi
 
 # Check whether the production cycle already exists

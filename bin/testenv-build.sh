@@ -29,6 +29,11 @@ fi
 ###############################################################################
 testenv-build() {
 
+# Check mandatory arguments
+if [ -f "$1" ]; then
+   usage
+fi
+
 local SRC=`\python -c "\
 import sys, json, os;
 config_file = sys.argv[1];

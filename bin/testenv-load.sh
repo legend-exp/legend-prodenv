@@ -29,6 +29,16 @@ fi
 ###############################################################################
 testenv-load() {
 
+# Check mandatory arguments
+if [ -z "$1" ]; then
+   usage
+fi
+# Check mandatory arguments
+if [ ! -f "$1" ]; then
+   \echo "Error: config file not valid."
+   exit 1;
+fi
+
 local INST=`\python -c "\
 import sys, json, os;
 config_file = sys.argv[1];
