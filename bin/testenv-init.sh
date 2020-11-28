@@ -26,14 +26,19 @@ exit 1;
 }
 
 ###############################################################################
+# Actual script implemented as function to protect against users sourcing it
+###############################################################################
+testenv-init() {
+
+###############################################################################
 # Set defaults, parse options, performs checks
 ###############################################################################
 
 # Set defaults
-PYGAMMA_ORGANIZATION="legend-exp"
-PYGAMMA_BRANCH="master"
-PYGAMMA_PATH=""
-PROD_ENV=${TESTENV_USERPROD}
+local PYGAMMA_ORGANIZATION="legend-exp"
+local PYGAMMA_BRANCH="master"
+local PYGAMMA_PATH=""
+local PROD_ENV=${TESTENV_USERPROD}
 
 # Check whether the setup.sh has been already sourced
 if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
@@ -95,7 +100,7 @@ EOF
 # Replace raw data path based on REFPROD name
 # FIXME: this is pretty ugly hack
 TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
-\sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/dataflow-config.json
+\sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/config.json
 
 # Install pygramma if path is empty
 if [ -z "${PYGAMMA_PATH}" ]; then
@@ -106,3 +111,6 @@ if [ -z "${PYGAMMA_PATH}" ]; then
 fi
 
 echo "Done."
+}
+
+testenv-init "$@"
