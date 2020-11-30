@@ -15,7 +15,6 @@ def main():
     parser.add_argument('-c', '--config-file', help='path/name of the config file',          required=True)
     parser.add_argument('-s', '--step',        help='data production step (e.g. raw_to_dsp)',required=True)
 
-    parser.add_argument('-r', '--recreate', help='recreate output file',      action="store_true")
     parser.add_argument('-v', '--verbose',  help='increase output verbosity', action="store_true")
 
     args = parser.parse_args()
@@ -36,6 +35,9 @@ def main():
 
     # output file
     f_output = args.output_file
+    if os.path.exists(f_output):
+        print('  Error: output file alrady exists')
+        exit()
 
     # config file
     f_config  = args.config_file
@@ -46,8 +48,8 @@ def main():
         config_dic = json.load(f, object_pairs_hook=OrderedDict)
 
     if   args.step == 'daq_to_raw': print('  Error: data production step not implemented yet')
-    elif args.step == 'raw_to_dsp': raw_to_dsp(f_input,f_output, config_dic, verbose=args.verbose, overwrite=args.recreate)
-    elif args.step == 'dsp_to_hit': print('  Error: data production step implemented yet')
+    elif args.step == 'raw_to_dsp': raw_to_dsp(f_input,f_output, config_dic, verbose=args.verbose, overwrite=False)
+    elif args.step == 'dsp_to_hit': print('  Error: data production step not implemented yet')
     else:                           print('  Error: data produciton step not known');
 
 if __name__=="__main__":
