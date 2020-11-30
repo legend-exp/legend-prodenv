@@ -49,7 +49,7 @@ local PYGAMA_PATH=""
 local PROD_ENV=${TESTENV_USERPROD}
 
 # Parse options and overwrite the variable default value
-while getopts "p:u:b:rh:" options; do
+while getopts "p:o:b:rh:" options; do
    case ${options} in
       p) PYGAMA_PATH=${OPTARG};;
       u) PYGAMA_ORGANIZATION=${OPTARG};;
