@@ -39,7 +39,7 @@ import sys, json, os;
 config_file = sys.argv[1];
 config_file_dir = os.path.dirname(os.path.abspath(config_file));
 config_dic = json.load(open(config_file));
-target = config_dic['setups']['testenv']['software']['src'];
+target = config_dic['setups']['testenv']['software']['src']['python'];
 print(os.path.join(config_file_dir,target));
 " $1`
 

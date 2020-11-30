@@ -86,7 +86,9 @@ fi
   "setups": {
     "testenv": {
       "software": {
-        "src": "./software/src",
+        "src": {
+          "python": "./software/src/python"
+        },
         "inst":"./software/inst" 
       },
       "data": {
@@ -108,7 +110,7 @@ TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
 if [ -z "${PYGAMA_PATH}" ]; then
    \git clone \
       git@github.com:${PYGAMA_ORGANIZATION}/pygama.git \
-      ${PROD_ENV}/${PRODUCTION_TAG}/software/src/pygama \
+      ${PROD_ENV}/${PRODUCTION_TAG}/software/src/python/pygama \
       --branch ${PYGAMA_BRANCH}
 fi
 
