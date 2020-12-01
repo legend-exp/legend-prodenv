@@ -3,12 +3,11 @@
 ###############################################################################
 # Description
 ###############################################################################
-
 usage() { 
-\echo >&2  "Usage: testenv-load [OPTIONS] ./path/to/config.json"
+\echo >&2  "Usage: testenv-run [OPTIONS] ./path/to/config.json ./path/to/keylist.txt"
 \cat >&2 <<EOF
 
-This script load the software of a production cycle and loads it
+This script runs the data production over the files listed in the keylist
 
 Options:
    -?    ????
@@ -27,10 +26,10 @@ fi
 ###############################################################################
 # Set defaults, parse options, performs checks
 ###############################################################################
-testenv-load() {
+testenv-run() {
 
 # Check mandatory arguments
-if [ -z "$1" ]; then
+if [ -z "$1" ] || [ -z "$2" ]; then
    usage
 fi
 # Check mandatory arguments
@@ -38,7 +37,12 @@ if [ ! -f "$1" ]; then
    \echo "Error: config file not valid."
    exit 1;
 fi
+if [ ! -f "$2" ]; then
+   \echo "Error: keylist not valid."
+   exit 1;
+fi
 
+# extract installation dir
 local INST=`\python -c "\
 import sys, json, os;
 config_file = sys.argv[1];
@@ -51,7 +55,41 @@ print(os.path.join(config_file_dir,target));
 export PYTHONPATH=$INST
 export PYTHONUSERBASE=$INST
 
-echo "Done."
+# extract dir in which data are genrated
+local GEN=`\python -c "\
+import sys, json, os;
+config_file = sys.argv[1];
+config_file_dir = os.path.dirname(os.path.abspath(config_file));
+config_dic = json.load(open(config_file));
+target = config_dic['setups']['testenv']['data']['gen'];
+print(os.path.join(config_file_dir,target));
+" $1`
+
+local META=`\python -c "\
+import sys, json, os;
+config_file = sys.argv[1];
+config_file_dir = os.path.dirname(os.path.abspath(config_file));
+config_dic = json.load(open(config_file));
+target = config_dic['setups']['testenv']['data']['meta'];
+print(os.path.join(config_file_dir,target));
+" $1`
+
+local PROCESSOR_LIST=`\python -c "\
+import sys, json, os;
+config_file = sys.argv[1];
+config_file_dir = os.path.dirname(os.path.abspath(config_file));
+config_dic = json.load(open(config_file));
+target = config_dic['setups']['testenv']['proc']['raw_to_dsp']['processor_list'];
+print(os.path.join(sys.argv[2],target));
+" $1 $META` 
+
+echo $PROCESSOR_LIST
+
+for i in `cat $2`; do
+    pygama-run.py -i $GEN/raw/$i -o $GEN/dsp/$i -c $PROCESSOR_LIST -s raw_to_dsp 
+done
+
 }
 
-testenv-load "$@"
+testenv-run "$@"
+
