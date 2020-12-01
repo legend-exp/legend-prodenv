@@ -3,7 +3,6 @@
 ###############################################################################
 # Description
 ###############################################################################
-
 usage() { 
 \echo >&2  "Usage: testenv-build [OPTIONS] ./path/to/config.json"
 \cat >&2 <<EOF
@@ -25,7 +24,7 @@ if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
 fi
 
 ###############################################################################
-# Actual script implemented as function to protect against users sourcing it
+# Main function: load variables from config file and install python
 ###############################################################################
 testenv-build() {
 

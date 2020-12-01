@@ -3,7 +3,6 @@
 ###############################################################################
 # Description
 ###############################################################################
-
 usage() { 
 \echo >&2  "Usage: testenv-init [OPTIONS] PRODUCTION_TAG"
 \cat >&2 <<EOF
@@ -34,7 +33,7 @@ if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
 fi
 
 ###############################################################################
-# Actual script implemented as function to protect against users sourcing it
+# Main function: parse options, create dir/file structure, download pygama
 ###############################################################################
 testenv-init() {
 
@@ -102,7 +101,6 @@ fi
 EOF
 
 # Replace raw data path based on REFPROD name
-# FIXME: this is pretty ugly hack
 TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
 \sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/config.json
 
