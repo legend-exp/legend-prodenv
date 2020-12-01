@@ -1,29 +1,25 @@
-# LEGEND Testing Enviroment
+# LEGEND Testing Environment
 
-This repository provides an environment and set of scripts to create new production cycles and handle them. 
+This repository provides an environment and a set of scripts to create new production cycles and handle them. 
 
 ## Typical Workflow
-To create a new production cycle and process the data you will need to follow
-these steps:
-* source the `setup.sh` to set the env var of the testing enviroment
-* create the the directory structure for a new production cycle with `testenv-init.sh`
-* customize the config.json file of the production cycle 
-* install the code in the production cycle with `testenv-build.sh`
-* run the production with `testenv-run-raw-to-dsp.sh`
+The steps to create a new production cycle and process the data are:
+* source the `setup.sh` to set the env variables of the testing environment
+* run `testenv-init.sh` to create the directory structure of a new production cycle 
+* customize the config.json file in the production cycle 
+* run `testenv-build.sh` to install the code
+* run `testenv-run-raw-to-dsp.sh` to create the dsp files
 
-After completing a production, you might want to edit the local installation of
-pygama or the config files and process again the data. In this case you will
-need to repeat these steps:
-* source the `setup.sh` to set the env var of the testing enviroment
-* modify pygama source code or the list of processors
-* install the code in the production cycle with `testenv-build.sh`
+The typical workflow of a user implementing new routines is:
+* source the `setup.sh`
+* modify the pygama source code or the list of processors
+* run `testenv-build.sh` to install the code
 * remove the files produced by the previous production
-* run the production with `testenv-run-raw-to-dsp.sh`
+* run `testenv-run-raw-to-dsp.sh` to create the dsp files
 
-In the following, the scripts needed for this typical workflow are briefly
-described.
+A brief description of these basic scripts is given in the following.
 
-###### `$ source setup.sh`
+###### source setup.sh
 Sourcing the setup.sh file in the top directory of the testing environment will:
 * set environmental variables storing the path to the environment
 * add the bin directory to the user's PATH
