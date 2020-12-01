@@ -19,7 +19,7 @@ The typical workflow of a user implementing new routines is:
 
 A brief description of these basic scripts is given in the following.
 
-###### source setup.sh
+### source setup.sh
 Sourcing the setup.sh file in the top directory of the testing environment will:
 * set environmental variables storing the path to the environment
 * add the bin directory to the user's PATH
