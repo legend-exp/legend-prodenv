@@ -101,7 +101,7 @@ fi
         "daq_to_raw": {
         }, 
         "raw_to_dsp": {
-          "processor_list": "./dsp/processor_list.py"
+          "processor_list": "./dsp/processor_list.json"
         },
         "dsp_to_hit": {
         } 
@@ -116,7 +116,7 @@ TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
 \sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/config.json
 
 # Create json config file
-\cat > ${PROD_ENV}/${PRODUCTION_TAG}/data/meta/dsp/processor_list.py  <<EOF
+\cat > ${PROD_ENV}/${PRODUCTION_TAG}/data/meta/dsp/processor_list.json  <<EOF
 {
   "outputs": [
     "bl", "bl_sig", "trapEmax"
