@@ -54,7 +54,7 @@ def main():
         config_dic = json.load(f, object_pairs_hook=OrderedDict)
 
     if   args.step == 'daq_to_raw': print('  Error: data production step not implemented yet')
-    elif args.step == 'raw_to_dsp': raw_to_dsp(f_input,f_output, config_dic, n_max=1, verbose=args.verbose, overwrite=False)
+    elif args.step == 'raw_to_dsp': raw_to_dsp(f_input,f_output, config_dic, n_max=args.max_ev_num, verbose=args.verbose, overwrite=False)
     elif args.step == 'dsp_to_hit': print('  Error: data production step not implemented yet')
     else:                           print('  Error: data produciton step not known');
 
