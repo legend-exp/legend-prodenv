@@ -9,9 +9,6 @@ usage() {
 
 This script starts a bash with the python enviromental variables set to target
 the specified production cycle.
-
-Options:
-   -?    ????
 EOF
 exit 1;
 }

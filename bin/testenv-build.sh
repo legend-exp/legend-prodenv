@@ -8,9 +8,6 @@ usage() {
 \cat >&2 <<EOF
 
 This script install the software in the production cycle
-
-Options:
-   -?    ????
 EOF
 exit 1;
 }

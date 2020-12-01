@@ -4,7 +4,7 @@
 # Description
 ###############################################################################
 usage() { 
-\echo >&2  "Usage: testenv-run-raw-to-dsp [OPTIONS] ./path/to/config.json ./path/to/keylist.txt"
+\echo >&2  "Usage: testenv-r2d [OPTIONS] ./path/to/config.json ./path/to/keylist.txt"
 \cat >&2 <<EOF
 
 This script runs the data production over the files listed in the keylist
@@ -29,7 +29,7 @@ fi
 ###############################################################################
 # Set defaults, parse options, performs checks
 ###############################################################################
-testenv-run() {
+testenv-r2d() {
 
 # Parse options and overwrite the variable default value
 while getopts "vm:" options; do
@@ -68,12 +68,21 @@ export PYTHONPATH=$INST
 export PYTHONUSERBASE=$INST
 
 # extract dir in which data are genrated
-local GEN=`\python -c "\
+local RAW=`\python -c "\
 import sys, json, os;
 config_file = sys.argv[1];
 config_file_dir = os.path.dirname(os.path.abspath(config_file));
 config_dic = json.load(open(config_file));
-target = config_dic['setups']['testenv']['data']['gen'];
+target = config_dic['setups']['testenv']['data']['raw'];
+print(os.path.join(config_file_dir,target));
+" $1`
+
+local DSP=`\python -c "\
+import sys, json, os;
+config_file = sys.argv[1];
+config_file_dir = os.path.dirname(os.path.abspath(config_file));
+config_dic = json.load(open(config_file));
+target = config_dic['setups']['testenv']['data']['dsp'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
@@ -98,10 +107,10 @@ print(os.path.join(sys.argv[2],target));
 echo $PROCESSOR_LIST
 
 for i in `cat $2`; do
-    pygama-run.py -i $GEN/raw/$i -o $GEN/dsp/$i -c $PROCESSOR_LIST -s raw_to_dsp $VERBOSITY $MAX_EV_NUM
+    pygama-run.py -i $RAW/$i -o $DSP/$i -c $PROCESSOR_LIST -s raw_to_dsp $VERBOSITY $MAX_EV_NUM
 done
 
 }
 
-testenv-run-raw-to-dsp "$@"
+testenv-r2d "$@"
 

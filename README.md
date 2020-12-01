@@ -8,14 +8,14 @@ The steps to create a new production cycle and process the data are:
 * run `testenv-init.sh` to create the directory structure of a new production cycle 
 * customize the config.json file in the production cycle 
 * run `testenv-build.sh` to install the code
-* run `testenv-run-raw-to-dsp.sh` to create the dsp files
+* run `testenv-run-r2d.sh` to create the dsp files
 
 The typical workflow of a user implementing new routines is:
 * source the `setup.sh`
 * modify the pygama source code or the list of processors
 * run `testenv-build.sh` to install the code
 * remove the files produced by the previous production
-* run `testenv-run-raw-to-dsp.sh` to create the dsp files
+* run `testenv-run-r2d.sh` to create the dsp files
 
 A brief description of these steps is given in the following.
 
@@ -40,12 +40,13 @@ After the initialization the production cycle structure should look like this:
     └── my-test-cycle
         ├── config.json
         ├── data
-        │   ├── daq
         │   ├── gen
+        │   │   ├── daq
         │   │   ├── dsp
         │   │   ├── hit
         │   │   └── raw
         │   └── meta
+        │       ├── daq
         │       ├── dsp
         │       │   └── processor_list.json
         │       ├── hit
@@ -73,7 +74,7 @@ The main config file specifies all paths. At the moment it also includes some re
 This script installs the software from the pygama `src` into the `inst` directory from which it will be executed. This script has to be executed every time the code is modified.
 
 
-### testenv-run-raw-to-dsp.sh /path/to/production/cycle/config.json /path/to/keylist.txt
+### testenv-r2d.sh /path/to/production/cycle/config.json /path/to/keylist.txt
 
 This script runs the production of the files in the keylist. Currently the keylist is an file with the current structure:
 ```
