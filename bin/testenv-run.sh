@@ -10,7 +10,10 @@ usage() {
 This script runs the data production over the files listed in the keylist
 
 Options:
-   -?    ????
+   -m    maximum number of events to process
+   -v    increased output verbosity
+   -q    submit jobs with qsub
+
 EOF
 exit 1;
 }
@@ -27,6 +30,15 @@ fi
 # Set defaults, parse options, performs checks
 ###############################################################################
 testenv-run() {
+
+# Parse options and overwrite the variable default value
+while getopts "vm:" options; do
+   case ${options} in
+      v) VERBOSITY="-v";;
+      m) MAX_EV_NUM="-m "${OPTARG};;
+   esac
+done
+shift $((OPTIND - 1))
 
 # Check mandatory arguments
 if [ -z "$1" ] || [ -z "$2" ]; then
@@ -86,7 +98,7 @@ print(os.path.join(sys.argv[2],target));
 echo $PROCESSOR_LIST
 
 for i in `cat $2`; do
-    pygama-run.py -i $GEN/raw/$i -o $GEN/dsp/$i -c $PROCESSOR_LIST -s raw_to_dsp 
+    pygama-run.py -i $GEN/raw/$i -o $GEN/dsp/$i -c $PROCESSOR_LIST -s raw_to_dsp $VERBOSITY $MAX_EV_NUM
 done
 
 }
