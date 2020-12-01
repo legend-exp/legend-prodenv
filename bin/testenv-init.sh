@@ -78,7 +78,7 @@ fi
 # Create file system
 \mkdir -p $PROD_ENV/$PRODUCTION_TAG/software/{inst,src}
 \mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/{gen,meta,raw}
-\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/meta/keylists
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/meta/{keylists,daq_to_raw,raw_to_dsp}
 
 # Create json config file
 \cat > ${PROD_ENV}/${PRODUCTION_TAG}/config.json  <<EOF
@@ -104,6 +104,54 @@ EOF
 # Replace raw data path based on REFPROD name
 TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
 \sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/config.json
+
+# Create json config file
+\cat > ${PROD_ENV}/${PRODUCTION_TAG}/data/meta/raw_to_dsp/processor_list.py  <<EOF
+{
+  "outputs": [
+    "bl", "bl_sig", "trapEmax"
+  ],
+  "processors":{
+    "bl, bl_sig":{
+      "function": "mean_stdev",
+      "module": "pygama.dsp.processors",
+      "args" : ["waveform[0:1000]", "bl", "bl_sig"],
+      "prereqs": ["waveform"],
+      "unit": ["ADC", "ADC"]
+    },
+    "wf_blsub":{
+      "function": "subtract",
+      "module": "numpy",
+      "args": ["waveform", "bl", "wf_blsub"],
+      "prereqs": ["waveform", "bl"],
+      "unit": "ADC"
+    },
+    "wf_pz": {
+      "function": "pole_zero",
+      "module": "pygama.dsp.processors",
+      "args": ["wf_blsub", "db.pz.tau", "wf_pz"],
+      "prereqs": ["wf_blsub"],
+      "unit": "ADC",
+      "defaults": { "db.pz.tau":"260*us" }
+    },
+    "wf_trap": {
+      "function": "trap_norm",
+      "module": "pygama.dsp.processors",
+      "args": ["wf_pz", "8*us", "2*us", "wf_trap"],
+      "prereqs": ["wf_pz"],
+      "unit": "ADC"
+    },
+    "trapEmax": {
+      "function": "amax",
+      "module": "numpy",
+      "args": ["wf_trap", 1, "trapEmax"],
+      "kwargs": {"signature":"(n),()->()", "types":["fi->f"]},
+      "unit": "ADC",
+      "prereqs": ["wf_trap"]
+    }
+  }
+}
+EOF
 
 # Install pygramma if path is empty
 if [ -z "${PYGAMA_PATH}" ]; then
