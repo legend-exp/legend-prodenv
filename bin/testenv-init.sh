@@ -77,7 +77,8 @@ fi
 
 # Create file system
 \mkdir -p $PROD_ENV/$PRODUCTION_TAG/software/{inst,src}
-\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/{gen,meta}
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/{gen,meta,raw}
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/meta/keylists
 
 # Create json config file
 \cat > ${PROD_ENV}/${PRODUCTION_TAG}/config.json  <<EOF
