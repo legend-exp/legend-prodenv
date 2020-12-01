@@ -4,7 +4,7 @@
 # Description
 ###############################################################################
 usage() { 
-\echo >&2  "Usage: testenv-run [OPTIONS] ./path/to/config.json ./path/to/keylist.txt"
+\echo >&2  "Usage: testenv-run-raw-to-dsp [OPTIONS] ./path/to/config.json ./path/to/keylist.txt"
 \cat >&2 <<EOF
 
 This script runs the data production over the files listed in the keylist
@@ -103,5 +103,5 @@ done
 
 }
 
-testenv-run "$@"
+testenv-run-raw-to-dsp "$@"
 
