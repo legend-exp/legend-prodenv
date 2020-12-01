@@ -5,20 +5,20 @@ This repository provides an environment and set of scripts to create new product
 ## Typical Workflow
 To create a new production cycle and process the data you will need to follow
 these steps:
-l. source the `setup.sh` to set the env var of the testing enviroment
-l. create the the directory structure for a new production cycle with `testenv-init.sh`
-l. customize the config.json file of the production cycle 
-l. install the code in the production cycle with `testenv-build.sh`
-l. run the production with `testenv-run-raw-to-dsp.sh`
+* source the `setup.sh` to set the env var of the testing enviroment
+* create the the directory structure for a new production cycle with `testenv-init.sh`
+* customize the config.json file of the production cycle 
+* install the code in the production cycle with `testenv-build.sh`
+* run the production with `testenv-run-raw-to-dsp.sh`
 
 After completing a production, you might want to edit the local installation of
 pygama or the config files and process again the data. In this case you will
 need to repeat these steps:
-l. source the `setup.sh` to set the env var of the testing enviroment
-l. modify pygama source code or the list of processors
-l. install the code in the production cycle with `testenv-build.sh`
-l. remove the files produced by the previous production
-l. run the production with `testenv-run-raw-to-dsp.sh`
+* source the `setup.sh` to set the env var of the testing enviroment
+* modify pygama source code or the list of processors
+* install the code in the production cycle with `testenv-build.sh`
+* remove the files produced by the previous production
+* run the production with `testenv-run-raw-to-dsp.sh`
 
 In the following, the scripts needed for this typical workflow are briefly
 described.
