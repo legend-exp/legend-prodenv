@@ -78,7 +78,7 @@ fi
 # Create file system
 \mkdir -p $PROD_ENV/$PRODUCTION_TAG/software/{inst,src}
 \mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/meta/{daq,raw,dsp,hit,keylists}
-\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/gen/{daq,raw,dsp,hit}
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/prod/{daq,raw,dsp,hit}
 
 # Create json config file
 \cat > ${PROD_ENV}/${PRODUCTION_TAG}/config.json  <<EOF
@@ -93,10 +93,10 @@ fi
       },
       "data": {
         "meta": "./data/meta",
-        "daq":  "./data/gen/daq",
-        "raw":  "./../../TESTENV_REFPROD_BASENAME/master/data/gen/raw",
-        "dsp":  "./data/gen/dsp",
-        "hit":  "./data/gen/hit"
+        "daq":  "./data/prod/daq",
+        "raw":  "./../../TESTENV_REFPROD_BASENAME/master/data/prod/raw",
+        "dsp":  "./data/prod/dsp",
+        "hit":  "./data/prod/hit"
       },
       "proc": {
         "daq_to_raw": {

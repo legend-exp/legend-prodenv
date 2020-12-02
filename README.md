@@ -40,7 +40,7 @@ After the initialization the production cycle structure should look like this:
     └── my-test-cycle
         ├── config.json
         ├── data
-        │   ├── gen
+        │   ├── prod
         │   │   ├── daq
         │   │   ├── dsp
         │   │   ├── hit
@@ -62,7 +62,7 @@ After the initialization the production cycle structure should look like this:
 This directory structure is still preliminary and it will be refined. The basic ideas behind the current structure are:
 * each production cycle has a `./config.json` containing all configurations 
 * `./software` contains both the source code (`./software/src`) and its installation (`./software/inst`)
-* `./data` contains the original daq files (`./data/daq`), the generated data (`./data/gen/{raw,dsp,hit,...}`), the metadata (`./data/meta/{raw,dsp,hit,...,keylist). In the future the metadata directory will be replaced with a git repository
+* `./data` contains the original daq files (`./data/daq`), the generated data (`./data/prod/{raw,dsp,hit,...}`), the metadata (`./data/meta/{raw,dsp,hit,...,keylist). In the future the metadata directory will be replaced with a git repository
 
 
 ### Customize the config.json file
@@ -82,8 +82,8 @@ my-dir/my-file-1.lh5
 my-dir/my-file-2.lh5
 my-dir/my-file-3.lh5
 ```
-The script will search for `./data/gen/raw/my-dir/my-file-1.lh5` and create
-`./data/gen/dsp/my-dir/my-file-1.lh5`. 
+The script will search for `./data/prod/raw/my-dir/my-file-1.lh5` and create
+`./data/prod/dsp/my-dir/my-file-1.lh5`. 
 
 The script does not overwrite files and exist when the output file already exist. Users should remove by hand their files before running a new production.
 
