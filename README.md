@@ -19,7 +19,7 @@ Once a production cycle has been initialized, the usual workflow of a user devel
 
 A brief description of these steps is given in the following. Run the scripts with the option `-h` for further information on the arguments and options available.
 
-### source the setup file of the testing enviroment
+### Source the setup file of the testing enviroment
 ```
 $ source setup.sh
 ```
@@ -30,7 +30,7 @@ Sourcing the setup.sh file in the top directory of the testing environment will:
 * redefine the umask such that all files created by the user do not have write permissions for the group and others.
 
 
-### initialize a new production cycle
+### Initialize a new production cycle
 ```
 $ testenv-init.sh -o github-username -b branch-name production-cycle-tag
 ```
@@ -105,25 +105,30 @@ The script will search for `./data/prod/raw/my-dir/my-file-1.lh5` and create
 The script does not overwrite files and exist when the output file already exist. Users should remove by hand their files before running a new production.
 
 ## Other scripts (run them with `-h` to get more info)
+### Start debug shell
 ```
 $ testenv-bash.sh /path/to/production/cycle/config.json
 ```
 Returns a bash in which the python installation refers to the one of the production cycle. It can be useful for debugging the code
 
+### Load python installation within the current shell
 ```
 $ testenv-load.sh /path/to/production/cycle/config.json
 ```
 Set the PYTHONPATH and PYTHONUSERBASE user base on the existing shell. Note that this script must be sourced
 
+### Reset crrent shell
 ```
 $ testenv-clean.sh /path/to/production/cycle/config.json
 ```
 Removes the environmental variables related to the testing enrivoment. Note that not all settings of the bash can be fully restored
 
+### Run pygama on single file
 ```
 $ pygama-run.py -i input-file -o output-file -c config-file -s raw_to_dsp
 ```
 Pygama Data Production Utility providing an interface to its main routines
 
 
-*contact <matteo.agostini@ucl.ac.uk> for support and report bugs*
+## Contacts
+Contact <matteo.agostini@ucl.ac.uk> for support and report bugs
