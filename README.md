@@ -15,7 +15,7 @@ Once a production cycle has been initialized, the usual workflow of a user devel
 * modify the pygama source code or the `processors_list.json`
 * run `testenv-build.sh` to install the code
 * remove the files produced by the previous production (e.g. `rm -r ./data/prod/dsp`)
-* run `testenv-run-r2d.sh` to create the dsp files
+* run `testenv-r2d.sh` to create the dsp files
 
 A brief description of these steps is given in the following. Run the scripts with the option `-h` for further information on the arguments and options available.
 
