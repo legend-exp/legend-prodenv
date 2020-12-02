@@ -1,25 +1,29 @@
 # LEGEND Testing Environment
 
-This repository provides an environment and a set of scripts to create new production cycles and handle them. 
+This repository provides an environment to handle multiple production cycles. It includes a file system structure and a set of scripts operating in it. The testing environment is currently limited to the `raw_to_dsp` step of the production.
 
-## Typical Workflow
+## Workflow
 The steps to create a new production cycle and process the data are:
-* source the `setup.sh` to set the env variables of the testing environment
-* run `testenv-init.sh` to create the directory structure of a new production cycle 
+* source the `setup.sh` to set the environmental variables of the testing environment
+* run `testenv-init.sh` to create the initialize a new production cycle 
 * customize the config.json file in the production cycle 
 * run `testenv-build.sh` to install the code
 * run `testenv-run-r2d.sh` to create the dsp files
 
-The typical workflow of a user implementing new routines is:
+Once a production cycle has been initialized, the usual workflow of a user developing/testing new routines is:
 * source the `setup.sh`
-* modify the pygama source code or the list of processors
+* modify the pygama source code or the `processors_list.json`
 * run `testenv-build.sh` to install the code
-* remove the files produced by the previous production
+* remove the files produced by the previous production (e.g. `rm -r ./data/prod/dsp`)
 * run `testenv-run-r2d.sh` to create the dsp files
 
-A brief description of these steps is given in the following.
+A brief description of these steps is given in the following. Run the scripts with the option `-h` for further information on the arguments and options available.
 
-### source setup.sh
+### source the setup file of the testing enviroment
+```
+$ source setup.sh
+```
+
 Sourcing the setup.sh file in the top directory of the testing environment will:
 * set environmental variables storing the path to the test environment
 * add the bin directory to the user's PATH to make the scripts available from the command line
