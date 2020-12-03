@@ -57,6 +57,7 @@ fi
 
 # Start virtual env
 source $INST/venv/bin/activate
+\python -m pip install ipython
 \python -m pip install -e $SRC/pygama
 deactivate
 # End virtual env
