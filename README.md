@@ -7,13 +7,13 @@ The steps to create a new production cycle and process the data are:
 * source the `setup.sh` to set the environmental variables of the testing environment
 * run `testenv-init.sh` to create the initialize a new production cycle 
 * customize the config.json file in the production cycle 
-* run `testenv-build.sh` to install the code
+* run `testenv-install.sh` to install the code
 * run `testenv-run-r2d.sh` to create the dsp files
 
 Once a production cycle has been initialized, the usual workflow of a user developing/testing new routines is:
 * source the `setup.sh`
 * modify the pygama source code or the `processors_list.json`
-* run `testenv-build.sh` to install the code
+* run `testenv-install.sh` to install the code
 * remove the files produced by the previous production (e.g. `rm -r ./data/prod/dsp`)
 * run `testenv-r2d.sh` to create the dsp files
 
@@ -82,7 +82,7 @@ The main config file specifies all paths. At the moment it also includes some re
 
 ### Install the software
 ```
-$ testenv-build.sh /path/to/production/cycle/config.json
+$ testenv-install.sh /path/to/production/cycle/config.json
 ```
 
 This script installs the software from the pygama `src` into the `inst` directory from which it will be executed. This script has to be executed every time the code is modified.

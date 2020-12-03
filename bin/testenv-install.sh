@@ -4,7 +4,7 @@
 # Description
 ###############################################################################
 usage() { 
-\echo >&2  "Usage: testenv-build [OPTIONS] ./path/to/config.json"
+\echo >&2  "Usage: testenv-install [OPTIONS] ./path/to/config.json"
 \cat >&2 <<EOF
 
 This script install the software in the production cycle
@@ -23,7 +23,7 @@ fi
 ###############################################################################
 # Main function: load variables from config file and install python
 ###############################################################################
-testenv-build() {
+testenv-install() {
 
 # Check mandatory arguments
 if [ ! -f "$1" ]; then
@@ -48,11 +48,15 @@ target = config_dic['setups']['testenv']['software']['inst'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
-export PYTHONPATH=$INST
-export PYTHONUSERBASE=$INST
+# Start virtual env
+\virtualenv -p /usr/bin/python3 $INST/venv
+source $INST/venv/bin/activate
+\python -m pip install --upgrade pip
 \python -m pip install -e $SRC/pygama
+deactivate
+# End virtual env
 
 echo "Done."
 }
 
-testenv-build "$@"
+testenv-install "$@"

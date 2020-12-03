@@ -64,9 +64,6 @@ target = config_dic['setups']['testenv']['software']['inst'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
-export PYTHONPATH=$INST
-export PYTHONUSERBASE=$INST
-
 # extract dir in which data are genrated
 local RAW=`\python -c "\
 import sys, json, os;
@@ -104,11 +101,13 @@ target = config_dic['setups']['testenv']['proc']['raw_to_dsp']['processor_list']
 print(os.path.join(sys.argv[2],target));
 " $1 $META` 
 
-echo $PROCESSOR_LIST
-
+# Start virtual env
+source $INST/venv/bin/activate
 for i in `cat $2`; do
     pygama-run.py -i $RAW/$i -o $DSP/$i -c $PROCESSOR_LIST -s raw_to_dsp $VERBOSITY $MAX_EV_NUM
 done
+deactivate
+# End virtual env
 
 }
 
