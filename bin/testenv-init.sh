@@ -51,7 +51,7 @@ local PROD_ENV=${TESTENV_USERPROD}
 while getopts "p:o:b:rh:" options; do
    case ${options} in
       p) PYGAMA_PATH=${OPTARG};;
-      u) PYGAMA_ORGANIZATION=${OPTARG};;
+      o) PYGAMA_ORGANIZATION=${OPTARG};;
       b) PYGAMA_BRANCH=${OPTARG};;
       r) PROD_ENV=$TESTENV_REFPROD;;
       h) usage;;
