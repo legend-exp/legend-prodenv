@@ -37,7 +37,7 @@ fi
 ###############################################################################
 # Extract variables from config file and set them
 ###############################################################################
-local INST=`\python -c "\
+INST=`\python -c "\
 import sys, json, os;
 config_file = sys.argv[1];
 config_file_dir = os.path.dirname(os.path.abspath(config_file));
@@ -46,5 +46,4 @@ target = config_dic['setups']['testenv']['software']['inst'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
-export PYTHONPATH=$INST
-export PYTHONUSERBASE=$INST
+source $INST/venv/bin/activate
