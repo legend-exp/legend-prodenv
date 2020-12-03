@@ -53,11 +53,11 @@ if [ ! -d "$INST/venv" ]; then
    \virtualenv -p /usr/bin/python3 $INST/venv
    source $INST/venv/bin/activate
    \python -m pip install --upgrade pip
+   \python -m pip install ipython numpy
 fi
 
 # Start virtual env
 source $INST/venv/bin/activate
-\python -m pip install ipython
 \python -m pip install -e $SRC/pygama
 deactivate
 # End virtual env
