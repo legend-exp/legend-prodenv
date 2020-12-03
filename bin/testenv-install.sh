@@ -48,10 +48,15 @@ target = config_dic['setups']['testenv']['software']['inst'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
+# Create the virtual env if it has not been initialized yet
+if [ ! -d "$INST/venv" ]; then
+   \virtualenv -p /usr/bin/python3 $INST/venv
+   source $INST/venv/bin/activate
+   \python -m pip install --upgrade pip
+fi
+
 # Start virtual env
-\virtualenv -p /usr/bin/python3 $INST/venv
 source $INST/venv/bin/activate
-\python -m pip install --upgrade pip
 \python -m pip install -e $SRC/pygama
 deactivate
 # End virtual env

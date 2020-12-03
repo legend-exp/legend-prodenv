@@ -8,7 +8,7 @@ The steps to create a new production cycle and process the data are:
 * run `testenv-init.sh` to create the initialize a new production cycle 
 * customize the config.json file in the production cycle 
 * run `testenv-install.sh` to install the code
-* run `testenv-run-r2d.sh` to create the dsp files
+* run `testenv-r2d.sh` to create the dsp files
 
 Once a production cycle has been initialized, the usual workflow of a user developing/testing new routines is:
 * source the `setup.sh`
@@ -27,8 +27,7 @@ $ source setup.sh
 Sourcing the setup.sh file in the top directory of the testing environment will:
 * set environmental variables storing the path to the test environment
 * add the bin directory to the user's PATH to make the scripts available from the command line
-* redefine the umask such that all files created by the user do not have write permissions for the group and others.
-
+* set some aliases
 
 ### Initialize a new production cycle
 ```
@@ -85,7 +84,7 @@ The main config file specifies all paths. At the moment it also includes some re
 $ testenv-install.sh /path/to/production/cycle/config.json
 ```
 
-This script installs the software from the pygama `src` into the `inst` directory from which it will be executed. This script has to be executed every time the code is modified.
+This script creates a python virtualenv (only the firs time) and  installs in it pygama and its dependencies. Pygama is installed from the `src`. 
 
 
 ### Run raw_do_dsp data production
@@ -109,19 +108,10 @@ The script does not overwrite files and exist when the output file already exist
 ```
 $ testenv-bash.sh /path/to/production/cycle/config.json
 ```
-Returns a bash in which the python installation refers to the one of the production cycle. It can be useful for debugging the code
+It loads the virtual environment of the production cycle and all the software installed. Type `deactivate` to exit.
 
-### Load python installation within the current shell
-```
-$ testenv-load.sh /path/to/production/cycle/config.json
-```
-Set the PYTHONPATH and PYTHONUSERBASE user base on the existing shell. Note that this script must be sourced
+Note that this is not an actual script but an alias that `source testenv-load.sh`. With this trick the users do not need to remember what has to be sourced and what has to be run.
 
-### Reset crrent shell
-```
-$ testenv-clean.sh /path/to/production/cycle/config.json
-```
-Removes the environmental variables related to the testing enrivoment. Note that not all settings of the bash can be fully restored
 
 ### Run pygama on single file
 ```
