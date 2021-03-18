@@ -11,10 +11,10 @@ This script initializes a new production cycle named PRODUCTION_TAG.
 PRODUCTION_TAG is a mandatory argument and should be parsed after the options. 
 
 Options:
-   -p    custom path to pygama source directory. Install pygama if not found
-         [default: new-production-cycle/software/src]
+   -p    custom path to user source directory. Install pygama and pyfcutils if 
+         not found [default: new-production-cycle/software/src]
 
-   -o    set github organization pygama is cloned from [default: legend-exp]
+   -o    set github organization user code is cloned from [default: legend-exp]
 
    -b    set which branch to checkout [default: master]
 
@@ -41,18 +41,17 @@ testenv-init() {
 # Set defaults, parse options, performs checks
 ###############################################################################
 
-# Set defaults
-local PYGAMA_ORGANIZATION="legend-exp"
-local PYGAMA_BRANCH="master"
-local PYGAMA_PATH=""
+# Set defaultslocal GITHUB_ORGANIZATION="legend-exp"
+local GITHUB_BRANCH="master"
+local SRC_PATH=""
 local PROD_ENV=${TESTENV_USERPROD}
 
 # Parse options and overwrite the variable default value
 while getopts "p:o:b:rh:" options; do
    case ${options} in
-      p) PYGAMA_PATH=${OPTARG};;
-      o) PYGAMA_ORGANIZATION=${OPTARG};;
-      b) PYGAMA_BRANCH=${OPTARG};;
+      p) SRC_PATH=${OPTARG};;
+      o) GITHUB_ORGANIZATION=${OPTARG};;
+      b) USER_CODETHUB_BRANCH=${OPTARG};;
       r) PROD_ENV=$TESTENV_REFPROD;;
       h) usage;;
    esac
@@ -76,40 +75,42 @@ fi
 ###############################################################################
 
 # Create file system
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/gen
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/genpar
+\mkdir -p $PROD_ENV/$PRODUCTION_TAG/meta/{daq,raw,dsp,hit,keylists}
 \mkdir -p $PROD_ENV/$PRODUCTION_TAG/software/{inst,src}
-\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/meta/{daq,raw,dsp,hit,keylists}
-\mkdir -p $PROD_ENV/$PRODUCTION_TAG/data/prod/{daq,raw,dsp,hit}
+
+# FIXME: MPIK specific path
+\ln -s /lfs/l1/legend/software/singularity/legendexp_legend-base_latest_20210313112951.sif container.sif
 
 # Create json config file
 \cat > ${PROD_ENV}/${PRODUCTION_TAG}/config.json  <<EOF
 {
-  "setups": {
-    "testenv": {
-      "software": {
+   "setups": {
+      "l200hades": {
+         "data": {
+            "orig": "/lfs/l1/legend/detector_char/enr/hades/char_data",
+            "gen": "${PROD_ENV}/${PRODUCTION_TAG}/gen"
+            "meta": "${PROD_ENV}/${PRODUCTION_TAG}/meta"
+         },
+         "proc": {
+           "daq_to_raw": {}, 
+           "raw_to_dsp": {},
+           "dsp_to_hit": {} 
+         }
+         "prodver": "v01.00",
+         "software": {
+            "venv": {
+               "path": "${PROD_ENV}/bin/venv",
+               "name": "legend"
+            },
         "src": {
           "python": "./software/src/python"
         },
         "inst":"./software/inst" 
-      },
-      "data": {
-        "meta": "./data/meta",
-        "daq":  "./data/prod/daq",
-        "raw":  "./../../TESTENV_REFPROD_BASENAME/master/data/prod/raw",
-        "dsp":  "./data/prod/dsp",
-        "hit":  "./data/prod/hit"
-      },
-      "proc": {
-        "daq_to_raw": {
-        }, 
-        "raw_to_dsp": {
-          "processor_list": "./dsp/processor_list.json"
-        },
-        "dsp_to_hit": {
-        } 
+         }
       }
-    }
-  }
-} 
+   }
 EOF
 
 # Replace raw data path based on REFPROD name
@@ -117,7 +118,7 @@ TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
 \sed -i "s/TESTENV_REFPROD_BASENAME/${TESTENV_REFPROD_BASENAME}/g" ${PROD_ENV}/${PRODUCTION_TAG}/config.json
 
 # Create json config file
-\cat > ${PROD_ENV}/${PRODUCTION_TAG}/data/meta/dsp/processor_list.json  <<EOF
+\cat > ${PROD_ENV}/${PRODUCTION_TAG}/meta/dsp/processor_list.json  <<EOF
 {
   "outputs": [
     "bl", "bl_sig", "trapEmax"
@@ -165,11 +166,17 @@ TESTENV_REFPROD_BASENAME=`\basename $TESTENV_REFPROD`
 EOF
 
 # Install pygramma if path is empty
-if [ -z "${PYGAMA_PATH}" ]; then
+if [ -z "${SRC_PATH}" ]; then
    \git clone \
-      git@github.com:${PYGAMA_ORGANIZATION}/pygama.git \
+      git@github.com:${GITHUB_ORGANIZATION}/pygama.git \
       ${PROD_ENV}/${PRODUCTION_TAG}/software/src/python/pygama \
-      --branch ${PYGAMA_BRANCH}
+      --branch ${GITHUB_BRANCH}
+      git@github.com:${GITHUB_ORGANIZATION}/pyfcutils.git \
+      ${PROD_ENV}/${PRODUCTION_TAG}/software/src/python/pyfcutils \
+      --branch ${GITHUB_BRANCH}
+      git@github.com:${GITHUB_ORGANIZATION}/legend-dataflow-hades.git \
+      ${PROD_ENV}/${PRODUCTION_TAG}/software/src/python/legend-dataflow-hades \
+      --branch ${GITHUB_BRANCH}
 fi
 
 echo "Done."
