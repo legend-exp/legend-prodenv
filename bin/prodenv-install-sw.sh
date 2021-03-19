@@ -8,6 +8,10 @@ usage() {
 \cat >&2 <<EOF
 
 This script install the software in the production cycle
+
+Options:
+   -r  remove installation dir before reinstalling software 
+
 EOF
 exit 1;
 }
@@ -24,6 +28,16 @@ fi
 # Main function: load variables from config file and install python
 ###############################################################################
 run() {
+
+local RM_INST_DIR=false
+# Parse options and overwrite the variable default value
+while getopts "rh:" options; do
+   case ${options} in
+      r) RM_INST_DIR=true;;
+      h) usage;;
+   esac
+done
+shift $((OPTIND - 1))
 
 # Check mandatory arguments
 if [ ! -f "$1" ]; then
@@ -53,9 +67,11 @@ target = config_dic['setups']['l200hades']['execenv']['envvars']['VENV_BASE_DIR'
 print(os.path.join(config_file_dir,target));
 " $1`
 
-\rm -rvf $VENV_BASE_DIR/default/user/.local;
-\venv default python3 -m pip install -e $SRC/pyfcutils
-\venv default python3 -m pip ninstall -e $SRC/pygama
+if [ "$RM_INST_DIR" = true ]; then
+   \rm -rvf $VENV_BASE_DIR/default/user/.local;
+fi
+VENV_BASE_DIR=$VENV_BASE_DIR \venv default python3 -m pip install -e $SRC/pyfcutils
+VENV_BASE_DIR=$VENV_BASE_DIR \venv default python3 -m pip install -e $SRC/pygama
 
 echo "Done."
 }

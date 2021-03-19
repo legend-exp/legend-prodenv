@@ -31,7 +31,7 @@ exit 1;
 ###############################################################################
 # Check whether the setup.sh has been already sourced
 ###############################################################################
-if [ -z "$PRODENV_PROD_REF" ] || [ -z "$PRODENV_PROD_USER" ]; then
+if [ -z "$PRODENV" ]; then
    \echo "Error: source setup.sh before continuing.";
    exit 1;
 fi
