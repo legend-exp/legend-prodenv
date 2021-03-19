@@ -7,3 +7,4 @@
 $PRODENV/tools/miniconda3/bin/conda install -y -c conda-forge mamba
 $PRODENV/tools/miniconda3/bin/mamba create -y -c bioconda -c conda-forge -n snakemake snakemake-minimal
 \ln -s $PRODENV/tools/miniconda3/envs/snakemake/bin/snakemake $PRODENV/bin/
+\rm Miniconda3-latest-Linux-x86_64.sh
