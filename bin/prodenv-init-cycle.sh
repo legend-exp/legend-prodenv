@@ -4,7 +4,7 @@
 # Description
 ###############################################################################
 usage() { 
-\echo >&2  "Usage: testenv-init [OPTIONS] PRODUCTION_TAG"
+\echo >&2  "Usage: prodenv-init-cycle [OPTIONS] PRODUCTION_TAG"
 \cat >&2 <<EOF
 
 This script initializes a new production cycle named PRODUCTION_TAG.

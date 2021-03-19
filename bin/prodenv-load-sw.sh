@@ -4,25 +4,26 @@
 # Description
 ###############################################################################
 usage() { 
-\echo >&2  "Usage: testenv-load [OPTIONS] ./path/to/config.json"
+\echo >&2  "Usage: prodenv-load-sw [OPTIONS] ./path/to/config.json"
 \cat >&2 <<EOF
 
-This script load the software of a production cycle and loads it. This script
-should be sourced.
-
-Options:
-   -?    ????
+This script starts the container of a production cycle.
 EOF
 exit 1;
 }
 
 ###############################################################################
-# Run Checks
+# Check whether the setup.sh has been already sourced
 ###############################################################################
-if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
+if [ -z "$PRODENV" ]; then
    \echo "Error: source setup.sh before continuing.";
    exit 1;
 fi
+
+###############################################################################
+# Main function: load variables from config file and install python
+###############################################################################
+run() {
 
 # Check mandatory arguments
 if [ -z "$1" ]; then
@@ -34,16 +35,16 @@ if [ ! -f "$1" ]; then
    exit 1;
 fi
 
-###############################################################################
-# Extract variables from config file and set them
-###############################################################################
-INST=`\python -c "\
+local VENV_BASE_DIR=`\python -c "\
 import sys, json, os;
 config_file = sys.argv[1];
 config_file_dir = os.path.dirname(os.path.abspath(config_file));
 config_dic = json.load(open(config_file));
-target = config_dic['setups']['testenv']['software']['inst'];
+target = config_dic['setups']['l200hades']['execenv']['envvars']['VENV_BASE_DIR'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
-source $INST/venv/bin/activate
+\venv default
+}
+
+run "$@"

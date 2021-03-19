@@ -4,7 +4,7 @@
 # Description
 ###############################################################################
 usage() { 
-\echo >&2  "Usage: testenv-install [OPTIONS] ./path/to/config.json"
+\echo >&2  "Usage: prodenv-install-sw [OPTIONS] ./path/to/config.json"
 \cat >&2 <<EOF
 
 This script install the software in the production cycle
@@ -15,7 +15,7 @@ exit 1;
 ###############################################################################
 # Check whether the setup.sh has been already sourced
 ###############################################################################
-if [ -z "$TESTENV_REFPROD" ] || [ -z "$TESTENV_USERPROD" ]; then
+if [ -z "$PRODENV" ]; then
    \echo "Error: source setup.sh before continuing.";
    exit 1;
 fi
@@ -23,11 +23,16 @@ fi
 ###############################################################################
 # Main function: load variables from config file and install python
 ###############################################################################
-testenv-install() {
+run() {
 
 # Check mandatory arguments
 if [ ! -f "$1" ]; then
    usage
+fi
+# Check mandatory arguments
+if [ ! -f "$1" ]; then
+   \echo "Error: config file not valid."
+   exit 1;
 fi
 
 local SRC=`\python -c "\
@@ -35,34 +40,24 @@ import sys, json, os;
 config_file = sys.argv[1];
 config_file_dir = os.path.dirname(os.path.abspath(config_file));
 config_dic = json.load(open(config_file));
-target = config_dic['setups']['testenv']['software']['src']['python'];
+target = config_dic['setups']['l200hades']['paths']['src']['python'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
-local INST=`\python -c "\
+local VENV_BASE_DIR=`\python -c "\
 import sys, json, os;
 config_file = sys.argv[1];
 config_file_dir = os.path.dirname(os.path.abspath(config_file));
 config_dic = json.load(open(config_file));
-target = config_dic['setups']['testenv']['software']['inst'];
+target = config_dic['setups']['l200hades']['execenv']['envvars']['VENV_BASE_DIR'];
 print(os.path.join(config_file_dir,target));
 " $1`
 
-# Create the virtual env if it has not been initialized yet
-if [ ! -d "$INST/venv" ]; then
-   \virtualenv -p /usr/bin/python3 $INST/venv
-   source $INST/venv/bin/activate
-   \python -m pip install --upgrade pip
-   \python -m pip install ipython numpy
-fi
-
-# Start virtual env
-source $INST/venv/bin/activate
-\python -m pip install -e $SRC/pygama
-deactivate
-# End virtual env
+\rm -rvf $VENV_BASE_DIR/default/user/.local;
+\venv default python3 -m pip install -e $SRC/pyfcutils
+\venv default python3 -m pip ninstall -e $SRC/pygama
 
 echo "Done."
 }
 
-testenv-install "$@"
+run "$@"
