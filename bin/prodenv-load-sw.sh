@@ -44,7 +44,7 @@ target = config_dic['setups']['l200hades']['execenv']['envvars']['VENV_BASE_DIR'
 print(os.path.join(config_file_dir,target));
 " $1`
 
-\venv default
+VENV_BASE_DIR=$VENV_BASE_DIR \venv default
 }
 
 run "$@"
