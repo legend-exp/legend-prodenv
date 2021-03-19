@@ -97,11 +97,11 @@ fi
 if [ -z "$PATH_SRC" ]; then
    \git clone \
       git@github.com:$GITHUB_ORGANIZATION/pygama.git \
-      $PATH_CYCLE/$PRODUCTION_TAG/software/src/python/pygama \
+      $PATH_CYCLE/$PRODUCTION_TAG/src/python/pygama \
       --branch $GITHUB_BRANCH
    \git clone \
       git@github.com:$GITHUB_ORGANIZATION/pyfcutils.git \
-      $PATH_CYCLE/$PRODUCTION_TAG/software/src/python/pyfcutils \
+      $PATH_CYCLE/$PRODUCTION_TAG/src/python/pyfcutils \
       --branch $GITHUB_BRANCH
 fi
 
