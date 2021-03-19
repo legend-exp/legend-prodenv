@@ -113,15 +113,17 @@ ln -s  $PRODENV_DEFAULT_CONTAINER $PATH_CYCLE/$PRODUCTION_TAG/venv/default/
 \ln -s `\basename $PRODENV_DEFAULT_CONTAINER` \
        $PATH_CYCLE/$PRODUCTION_TAG/venv/default/rootfs.sif
 
+# FIXME:clean this
 # tools: software tools
-\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/tools
-\git clone \
-   git@github.com:oschulz/singularity-venv.git \
-   $PATH_CYCLE/$PRODUCTION_TAG/tools/venv
+#\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/tools
+#\git clone \
+#   git@github.com:oschulz/singularity-venv.git \
+#   $PATH_CYCLE/$PRODUCTION_TAG/tools/venv
 
+# FIXME: clean this up
 # bin: executable and scripts
-\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/bin
-\ln -s ../tools/venv/bin/venv $PATH_CYCLE/$PRODUCTION_TAG/bin/
+#\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/bin
+#\ln -s ../tools/venv/bin/venv $PATH_CYCLE/$PRODUCTION_TAG/bin/
 
 
 # Create json config file
