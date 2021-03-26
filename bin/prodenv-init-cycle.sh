@@ -58,7 +58,7 @@ local PATH_CYCLE=$PRODENV_PROD_USER
 local PATH_CONTAINER=$PRODENV_DEFAULT_CONTAINER
 
 # Parse options and overwrite the variable default value
-while getopts "p:o:b:rh:" options; do
+while getopts "p:o:b:rh" options; do
    case ${options} in
       p) PATH_SRC=${OPTARG};;
       o) GITHUB_ORGANIZATION=${OPTARG};;
@@ -102,7 +102,7 @@ fi
 \mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/src/python
 
 if [ -z "$PATH_SRC" ]; then
-   PATH_SRC="\$_/src/python"
+   PATH_SRC="./src/python"
    \git clone \
       git@github.com:$GITHUB_ORGANIZATION/pygama.git \
       $PATH_CYCLE/$PRODUCTION_TAG/src/python/pygama \
@@ -126,23 +126,41 @@ fi
     "setups": {
         "l200hades": {
             "paths": {
-                "orig": "/lfs/l1/legend/detector_char/enr/hades/char_data",
-                "gen": "\$_/gen",
-                "meta": "\$_/meta",
-                "par": "\$_/par",
+                "orig": "$PRODENV_DEFAULT_ORIG",
+                "gen": "./gen",
+                "meta": "./meta",
+                "par": "./par",
                 "src": {
                     "python": "$PATH_SRC"
                 }
             },
             "execenv": {
-                "envvars": {
-                    "VENV_BASE_DIR": "\$_/venv"
-                },
-                "cmd": ["\$_/tools/venv/bin/venv", "default"]
-            }
+                "legend": {
+                    "env": {
+                        "VENV_BASE_DIR": "./venv"
+                    },
+                    "exec": ["$PRODENV/tools/bin/venv", "default"]
+                }
+            }  
         }
     }
 } 
+EOF
+
+# Create json config file
+\cat > $PATH_CYCLE/$PRODUCTION_TAG/meta/config_dsp.json  <<EOF
+{
+   "outputs": [ "bl", "bl_sig"],
+   "processors":{
+      "bl, bl_sig":{
+         "function": "mean_stdev",
+         "module": "pygama.dsp.processors",
+         "args" : ["waveform", "bl", "bl_sig"],
+         "prereqs": ["waveform"],
+         "unit": ["ADC", "ADC"]
+      }
+   }
+}
 EOF
 echo "Done."
 }

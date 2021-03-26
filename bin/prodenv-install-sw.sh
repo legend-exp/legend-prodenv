@@ -63,15 +63,40 @@ import sys, json, os;
 config_file = sys.argv[1];
 config_file_dir = os.path.dirname(os.path.abspath(config_file));
 config_dic = json.load(open(config_file));
-target = config_dic['setups']['l200hades']['execenv']['envvars']['VENV_BASE_DIR'];
+target = config_dic['setups']['l200hades']['execenv']['legend']['env']['VENV_BASE_DIR'];
 print(os.path.join(config_file_dir,target));
+" $1`
+
+local VENV_EXEC_CMD=`\python -c "\
+import sys, json, os;
+config_file = sys.argv[1];
+config_file_dir = os.path.dirname(os.path.abspath(config_file));
+config_dic = json.load(open(config_file));
+target = config_dic['setups']['l200hades']['execenv']['legend']['exec'][0];
+print(target);
+" $1`
+
+local VENV_EXEC_ARG=`\python -c "\
+import sys, json, os;
+config_file = sys.argv[1];
+config_file_dir = os.path.dirname(os.path.abspath(config_file));
+config_dic = json.load(open(config_file));
+target = config_dic['setups']['l200hades']['execenv']['legend']['exec'][1];
+print(target);
 " $1`
 
 if [ "$RM_INST_DIR" = true ]; then
    \rm -rvf $VENV_BASE_DIR/default/user/.local;
 fi
-VENV_BASE_DIR=$VENV_BASE_DIR \venv default python3 -m pip install -e $SRC/pyfcutils
-VENV_BASE_DIR=$VENV_BASE_DIR \venv default python3 -m pip install -e $SRC/pygama
+VENV_EXTRA_OPTS="-B $XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR" \
+VENV_BASE_DIR=$VENV_BASE_DIR \
+$VENV_EXEC_CMD $VENV_EXEC_ARG \
+python3 -m pip install -e $SRC/pyfcutils
+
+VENV_EXTRA_OPTS="-B $XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR" \
+VENV_BASE_DIR=$VENV_BASE_DIR \
+$VENV_EXEC_CMD $VENV_EXEC_ARG \
+python3 -m pip install -e $SRC/pygama
 
 echo "Done."
 }
