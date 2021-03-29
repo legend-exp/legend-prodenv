@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
-import sys, argparse, json, numpy
+import sys, argparse, json
 import re,os, shutil, copy, string
 
 def subst_vars_impl(x, var_values, ignore_missing = False):
@@ -41,10 +41,10 @@ def main():
     if not os.path.exists(config_file):
         exit()
 
-    config_dic = json.load(open(config_file));
+    config_dic = json.load(open(config_file))
     subst_vars(
         config_dic,
-        var_values = {'_': os.path.dirname(config_file)},
+        var_values = {'_': os.path.dirname(os.path.abspath(config_file))},
         use_env = True, ignore_missing = False
     )
     print(config_dic)
