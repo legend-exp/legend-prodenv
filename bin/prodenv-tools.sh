@@ -14,6 +14,7 @@ ORIGDIR=$PWD
 snakemake-miniconda3/bin/conda install -y -c conda-forge mamba
 snakemake-miniconda3/bin/mamba create -y -c bioconda -c conda-forge -n snakemake snakemake-minimal
 \ln -s ../snakemake-miniconda3/envs/snakemake/bin/snakemake bin/
+\ln -s ../snakemake-miniconda3/envs/snakemake/bin/python3 bin/python3-snakemake
 \rm Miniconda3-latest-Linux-x86_64.sh
 
 cd $ORIGDIR

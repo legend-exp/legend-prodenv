@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3-snakemake
 
 import sys, argparse, json
 import re,os, shutil, copy, string
