@@ -88,7 +88,7 @@ fi
 
 # Create production cycle structure and populate it
 # gen & genpar: generated data
-\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/{gen,genpar}
+\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/{gen,genpar,log}
 
 # meta: metadata, soon a github package
 \mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/meta
@@ -130,12 +130,13 @@ fi
                 "gen": "\$_/gen",
                 "meta": "\$_/meta",
                 "par": "\$_/par",
+                "log": "\$_/log",
                 "src": {
                     "python": "$PATH_SRC"
                 }
             },
             "execenv": {
-                "legend": {
+                "default": {
                     "env": {
                         "VENV_BASE_DIR": "\$_/venv"
                     },
