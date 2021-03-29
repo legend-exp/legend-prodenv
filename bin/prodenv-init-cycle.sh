@@ -127,9 +127,9 @@ fi
         "l200hades": {
             "paths": {
                 "orig": "$PRODENV_DEFAULT_ORIG",
-                "gen": "./gen",
-                "meta": "./meta",
-                "par": "./par",
+                "gen": "\$_/gen",
+                "meta": "\$_/meta",
+                "par": "\$_/par",
                 "src": {
                     "python": "$PATH_SRC"
                 }
@@ -137,7 +137,7 @@ fi
             "execenv": {
                 "legend": {
                     "env": {
-                        "VENV_BASE_DIR": "./venv"
+                        "VENV_BASE_DIR": "\$_/venv"
                     },
                     "exec": ["$PRODENV/tools/bin/venv", "default"]
                 }
