@@ -1,7 +1,5 @@
 # Main setup file for the production enviroment. It needs to be sourced
 export PRODENV="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-export PRODENV_PROD_USER="${PRODENV}/prod-user"
-export PRODENV_PROD_REF="${PRODENV}/prod-ref"
 export PATH="${PRODENV}/bin:${PRODENV}/tools/bin:$PATH"
 
 # site specific paths

@@ -1,169 +1,123 @@
-#!/bin/bash
+#!/usr/bin/env python3-snakemake
 
-###############################################################################
-# Description
-###############################################################################
-usage() { 
-\echo >&2  "Usage: prodenv-init-cycle [OPTIONS] PRODUCTION_TAG"
-\cat >&2 <<EOF
+import sys, json, os, string, argparse
 
-This script initializes a new production cycle named PRODUCTION_TAG.
-PRODUCTION_TAG is a mandatory argument and should be parsed after the options. 
+def main():
+    # check existance of env vars
+    if os.getenv('PRODENV') == '' or os.getenv('PRODENV_DEFAULT_CONTAINER') == '':
+        print('Error: source setup.sh before continuing')
+        exit()
 
-Options:
-   -p <path>   Set custom path to user src directory. When not specified, 
-               all user software is cloned from github
-               [default path: new-production-cycle/src/python]
+    parser = argparse.ArgumentParser(description='Initialize a new production cycle')
+    parser.add_argument('prod_tag', 
+                        help='name of directory in which the production cycle is created',
+                        default='')
+    parser.add_argument('-p', dest='path', 
+                        help='set path to user src directory (default: clone reps in cycle)',
+                        default='')
+    parser.add_argument('-o', dest='organization', 
+                        help='set name of github organization from which reps are cloned (default:legend-exp)', 
+                        default='legend-exp')
+    parser.add_argument('-b', dest='branch',
+                        help='set name of branch to check out (default: master)', 
+                        default='master')
+    parser.add_argument('-c', dest='container',
+                        help='set path to software container',
+                        default=os.getenv('PRODENV_DEFAULT_CONTAINER'))
+    parser.add_argument('-r', dest='ref_cycle', action='store_true',  
+                        help='create a production cycle under prod-ref')
+    args = parser.parse_args()
 
-   -o <name>   Set the name of the github organization software is cloned from.
-               Can be used to clone the user's forks 
-               [default organization: $GITHUB_ORGANIZATION]
 
-   -b <name>   Set name of the branch to check out
-               Note that all reps need to have a branch with the same name
-               [default name: $GITHUB_BRANCH]
+    if args.ref_cycle is True:
+        path_cycle = os.getenv('PRODENV') + '/prod-ref/' + args.prod_tag
+    else:
+        path_cycle = os.getenv('PRODENV') + '/prod-usr/' + args.prod_tag
 
-   -c <path>   Set path to singularity container
-               [default path: $PRODENV_DEFAULT_CONTAINER]
+    if os.path.isdir(path_cycle):
+        print('Error: data production cycle with this tag already exists')
+        exit()
 
-   -r          Create a production cycle under prod-ref
-               [default: prod-user]
+    ###############################################################################
+    # Build new production enviroment
+    ###############################################################################
 
-EOF
-exit 1;
-}
+    # Create production cycle structure and populate it
+    # gen & genpar: generated data
+    os.makedirs(path_cycle + '/gen')
+    os.makedirs(path_cycle + '/genpar')
+    os.makedirs(path_cycle + '/log')
 
-###############################################################################
-# Check whether the setup.sh has been already sourced
-###############################################################################
-if [ -z "$PRODENV" ]; then
-   \echo "Error: source setup.sh before continuing.";
-   exit 1;
-fi
+    # meta: metadata, soon a github package
+    os.makedirs(path_cycle + '/meta')
+    os.system('\git clone git@github.com:' 
+              + args.organization + '/legend-dataflow-hades.git' 
+              + ' ' + path_cycle + '/dataflow'
+              + ' ' + '--branch' + ' ' + args.branch)
 
-###############################################################################
-# Main function: parse options, create dir/file structure, download pygama
-###############################################################################
-run() {
+    # src: user software
+    python_path = args.path
+    if python_path == "" or not os.path.isdir(python_path): 
+        os.makedirs(path_cycle + '/src/python/')
+        os.system('\git clone git@github.com:' 
+                + args.organization + '/pygama.git' 
+                + ' ' + path_cycle + '/src/python/pygama' 
+                + ' ' + '--branch' + ' ' + args.branch)
+        os.system('\git clone git@github.com:' 
+                + args.organization + '/pyfcutils.git' 
+                + ' ' + path_cycle + '/src/python/pyfcutils' 
+                + ' ' + '--branch' + ' ' + args.branch)
 
-###############################################################################
-# Set defaults, parse options, performs checks
-###############################################################################
+        python_path = '$_/src/python'
 
-# Set defaults
-local GITHUB_ORGANIZATION="legend-exp"
-local GITHUB_BRANCH="master"
-local PATH_SRC=""
-local PATH_CYCLE=$PRODENV_PROD_USER
-local PATH_CONTAINER=$PRODENV_DEFAULT_CONTAINER
+    # venv: venv local files
+    os.makedirs(path_cycle + '/venv/default/user')
+    os.symlink(args.container, path_cycle + '/venv/default/rootfs.sif')
 
-# Parse options and overwrite the variable default value
-while getopts "p:o:b:rh" options; do
-   case ${options} in
-      p) PATH_SRC=${OPTARG};;
-      o) GITHUB_ORGANIZATION=${OPTARG};;
-      b) GITHUB_BRANCH=${OPTARG};;
-      c) PATH_CONTAINER=${OPTARG};;
-      r) PATH_CYCLE=$PRODENV_PROD_REF;;
-      h) usage;;
-   esac
-done
-shift $((OPTIND - 1))
-
-# Get and test production tag
-PRODUCTION_TAG="$1"
-if [ -z "$PRODUCTION_TAG" ]; then
-   usage
-fi
-
-# Check whether the production cycle already exists
-if [ -d "$PATH_CYCLE/$PRODUCTION_TAG" ]; then
-   \echo "Error: a data production cycle with the same name already exists"
-   exit 1;
-fi
-
-###############################################################################
-# Build new production enviroment
-###############################################################################
-
-# Create production cycle structure and populate it
-# gen & genpar: generated data
-\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/{gen,genpar,log}
-
-# meta: metadata, soon a github package
-\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/meta
-
-# dataflow: dir containing snakemake configs
-\git clone \
-   git@github.com:legend-exp/legend-dataflow-hades.git  \
-   $PATH_CYCLE/$PRODUCTION_TAG/dataflow
-
-# src: user software
-\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/src/python
-
-if [ -z "$PATH_SRC" ]; then
-   PATH_SRC="./src/python"
-   \git clone \
-      git@github.com:$GITHUB_ORGANIZATION/pygama.git \
-      $PATH_CYCLE/$PRODUCTION_TAG/src/python/pygama \
-      --branch $GITHUB_BRANCH
-   \git clone \
-      git@github.com:$GITHUB_ORGANIZATION/pyfcutils.git \
-      $PATH_CYCLE/$PRODUCTION_TAG/src/python/pyfcutils \
-      --branch $GITHUB_BRANCH
-fi
-
-# venv: venv local files
-\mkdir -p $PATH_CYCLE/$PRODUCTION_TAG/venv/default/user
-#FIXME
-#\cp -l  $PATH_CONTAINER $PATH_CYCLE/$PRODUCTION_TAG/venv/default/
-\ln -s  $PATH_CONTAINER $PATH_CYCLE/$PRODUCTION_TAG/venv/default/
-\ln -s `\basename $PATH_CONTAINER` $PATH_CYCLE/$PRODUCTION_TAG/venv/default/rootfs.sif
-
-# Create json config file
-\cat > $PATH_CYCLE/$PRODUCTION_TAG/config.json  <<EOF
-{
-    "setups": {
-        "l200hades": {
-            "paths": {
-                "orig": "$PRODENV_DEFAULT_ORIG",
-                "gen": "\$_/gen",
-                "meta": "\$_/meta",
-                "par": "\$_/par",
-                "log": "\$_/log",
-                "src": {
-                    "python": "$PATH_SRC"
-                }
-            },
-            "execenv": {
-                "default": {
-                    "env": {
-                        "VENV_BASE_DIR": "\$_/venv"
+    # Create json config file
+    config_file = {
+        "setups": {
+            "l200hades": {
+                "paths": {
+                    "orig": os.getenv('PRODENV_DEFAULT_ORIG'),
+                    "gen": "$_/gen",
+                    "meta": "$_/meta",
+                    "par":  "$_/par",
+                    "log":  "$_/log",
+                    "src": {
+                        "python": python_path
+                    }
+                },
+                "execenv": {
+                    "default": {
+                    "env": { 
+                        "VENV_BASE_DIR": "$_/venv" 
                     },
-                    "exec": ["$PRODENV/tools/bin/venv", "default"]
-                }
-            }  
+                    "exec": [os.getenv('PRODENV') + '/tools/bin/venv', "default"]
+                    }
+                }  
+            }
+        }
+    } 
+
+    with open(path_cycle + '/config.json', 'w') as outfile:
+        json.dump(config_file, outfile, ensure_ascii=False, indent=4)
+
+    config_dsp = {
+        "outputs": [ "bl", "bl_sig"],
+        "processors":{
+            "bl, bl_sig":{
+                "function": "mean_stdev",
+                "module": "pygama.dsp.processors",
+                "args" : ["waveform", "bl", "bl_sig"],
+                "prereqs": ["waveform"],
+                "unit": ["ADC", "ADC"]
+            }
         }
     }
-} 
-EOF
 
-# Create json config file
-\cat > $PATH_CYCLE/$PRODUCTION_TAG/meta/config_dsp.json  <<EOF
-{
-   "outputs": [ "bl", "bl_sig"],
-   "processors":{
-      "bl, bl_sig":{
-         "function": "mean_stdev",
-         "module": "pygama.dsp.processors",
-         "args" : ["waveform", "bl", "bl_sig"],
-         "prereqs": ["waveform"],
-         "unit": ["ADC", "ADC"]
-      }
-   }
-}
-EOF
-echo "Done."
-}
+    with open(path_cycle + '/meta/config_dsp.json', 'w') as outfile:
+        json.dump(config_dsp, outfile, ensure_ascii=False, indent=4)
 
-run "$@"
+if __name__=="__main__":
+    main()
