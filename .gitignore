@@ -1,2 +1,4 @@
-ref-prod/
-user-prod/
+prod-usr/
+prod-ref/
+tools/
+bin/snakemake

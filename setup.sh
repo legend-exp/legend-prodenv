@@ -1,10 +1,8 @@
-# Main setup file for the test enviroment. It needs to be sourced
-export TESTENV="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-export PATH="${TESTENV}/bin:$PATH"
-export TESTENV_REFPROD="${TESTENV}/ref-prod"
-export TESTENV_USERPROD="${TESTENV}/user-prod"
+# Main setup file for the production enviroment. It needs to be sourced
+export PRODENV="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export PATH="${PRODENV}/bin:${PRODENV}/tools/bin:$PATH"
 
-alias testenv-bash.sh="source $TESTENV/bin/testenv-load.sh"
-
-
+# site specific paths
+export PRODENV_DEFAULT_CONTAINER='/lfs/l1/legend/software/singularity/legendexp_legend-base_latest_20210313112951.sif'
+export PRODENV_DEFAULT_ORIG='/lfs/l1/legend/detector_char/enr/hades/char_data'
 

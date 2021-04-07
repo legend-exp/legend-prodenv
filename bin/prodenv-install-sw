@@ -1,0 +1,42 @@
+#!/usr/bin/env python3-snakemake
+
+import sys, json, os, string, argparse
+
+def main():
+    parser = argparse.ArgumentParser(description='Install user software in data production enviroment')
+    parser.add_argument('config_file', 
+                        help='production cycle configuration file')
+    parser.add_argument('-r',  
+                        help='remove software directory before installing software', 
+                        action="store_true")
+    args = parser.parse_args()
+
+    if not os.path.isfile(args.config_file):
+        print('Error: config file does not exist')
+        exit()
+
+    config_file_dir = os.path.dirname(os.path.abspath(args.config_file))
+    config_dic = json.load(open(args.config_file))
+
+    venv_base_dir = config_dic['setups']['l200hades']['execenv']['default']['env']['VENV_BASE_DIR']
+    venv_exec_cmd = config_dic['setups']['l200hades']['execenv']['default']['exec'][0]
+    venv_exec_arg = config_dic['setups']['l200hades']['execenv']['default']['exec'][1]
+    path_src      = config_dic['setups']['l200hades']['paths']['src']['python']
+
+    venv_base_dir = string.Template(venv_base_dir).substitute({'_': config_file_dir})
+    venv_exec_cmd = string.Template(venv_exec_cmd).substitute({'_': config_file_dir})
+    venv_exec_arg = string.Template(venv_exec_arg).substitute({'_': config_file_dir})
+    path_src      = string.Template(path_src).substitute({'_': config_file_dir})
+
+    if args.remove: 
+        os.system('\rm -rvf ' + venv_base_dir + '/default/user/.local')
+
+    xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
+    os.putenv('VENV_EXTRA_OPTS', '-B ' + xdg_runtime_dir + ':' + xdg_runtime_dir)
+    os.putenv('VENV_BASE_DIR', venv_base_dir)
+
+    os.system(venv_exec_cmd + ' ' + venv_exec_arg + ' python3 -m pip install -e ' + path_src + '/pyfcutils')
+    os.system(venv_exec_cmd + ' ' + venv_exec_arg + ' python3 -m pip install -e ' + path_src + '/pygama')
+
+if __name__=="__main__":
+    main()
