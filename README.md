@@ -2,8 +2,8 @@
 
 Data production environment to handle multiple production cycles. It provides a file system structure and a set of python scripts. Within each production cycle, data can be automatically generated using snakemake and https://github.com/legend-exp/legend-dataflow-hades
 
-## User's Workflow
-Creation of a new produciton cycle:
+## Workflow
+Creation of a new production cycle:
 * source `setup.sh` to set some environmental variables
 * run `prodenv-init-cycle` to initialize a new production cycle
 * customize the `config.json` file in the production cycle
@@ -18,7 +18,7 @@ Workflow for existing production cycles:
 * remove all files in `gen/` and `genpar/` that need to be reprocessed
 * run `snakemake` to update the multi-tier data structure
 
-### Source the setup file of the testing enviroment
+### Source the setup file of the production  environment
 ```
 $ source setup.sh
 ```
@@ -56,7 +56,7 @@ generates a file-system structure under `./prod-usr/prod_tag/` and, by default, 
 * `legend-dataflow-hades` under `./prod-usr/prod_tag/dataflow`
 * `pygama` under `./prod-usr/prod_tag/src/python/pygama`
 * `pyfcutils` under `./prod-usr/prod_tag/src/python/pyfcutils`
-By default, all packages are downloaded from the the `legend-exp` organization and set to the `master` branch. The name of the organization and branch name can set with the `-o organization-name` and `-b branch-name` options. Users might consider to fork all these packages and set as organization their github username.
+By default, all packages are downloaded from the `legend-exp` organization and set to the `master` branch. The name of the organization and branch name can set with the `-o organization-name` and `-b branch-name` options. Users might consider to fork all these packages and set as organization their github username.
 
 When the option `-p path-to-custom-src-dir` is specified, `pygama` and `pyfcutils` are not downloaded. The path to the custom src directory is stored in `config.json`. The custom directory should contains a `pygama` and `pyfcutils` folder.
 
@@ -79,9 +79,9 @@ The structure of the production cycle is:
 ```
 
 *  `./config.json` contains paths to all main directories of the data production and 
-* `./dataflow` contains the `snakemake` configuration files. This repostiory can be edited to modify the data-flow 
-* `./gen`, `./genpar`, and `./log` are automatically generated during the dataproduction
-* `./src/python` contains the software used for data produciton. Users can edit these repositories. 
+* `./dataflow` contains the `snakemake` configuration files. This repository can be edited to modify the data-flow 
+* `./gen`, `./genpar`, and `./log` are automatically generated during the data production
+* `./src/python` contains the software used for data production. Users can edit these repositories. 
 * `./venv/` directory containing a link to the singularity container and the software compiled within the container
 
 ### Install the software
