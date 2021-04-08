@@ -28,7 +28,7 @@ def main():
     venv_exec_arg = string.Template(venv_exec_arg).substitute({'_': config_file_dir})
     path_src      = string.Template(path_src).substitute({'_': config_file_dir})
 
-    if args.remove: 
+    if args.r: 
         os.system('\rm -rvf ' + venv_base_dir + '/default/user/.local')
 
     xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
