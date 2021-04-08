@@ -68,13 +68,13 @@ The structure of the production cycle is:
 ├── config.json
 ├── dataflow
 ├── gen
-└── genpar
-└── log
-└── meta
-└── src
-    └── python
-            ├── pygama
-            └── pyfcutils
+├── genpar
+├── log
+├── meta
+├── src
+│   └── python
+│           ├── pygama
+│           └── pyfcutils
 └── venv
     └── default
 ```
