@@ -1,32 +1,33 @@
 # LEGEND Data Production Environment
 
-This repository provides an environment to handle multiple production cycles. The enviroment includes a file system structure and a set of python scripts. The default automatic data-production system relies on snakemake and https://github.com/legend-exp/legend-dataflow-hades
+Data production environment to handle multiple production cycles. It provides a file system structure and a set of python scripts. Within each production cycle, data can be automatically generated using snakemake and https://github.com/legend-exp/legend-dataflow-hades
 
-## Workflow
-The steps to create a new production cycle and process the data are:
-* source the `setup.sh` to set the environmental variables of the testing environment
-* run `prodenv-init-cycle` to initialize a new production cycle 
-* customize the setting of the new production cycle by editing its `config.json` file 
-* run `prodenv-install-sw` to install the software
+## User's Workflow
+Creation of a new produciton cycle:
+* source `setup.sh` to set some environmental variables
+* run `prodenv-init-cycle` to initialize a new production cycle
+* customize the `config.json` file in the production cycle
+* check-out specific version of `pygama`, `pyfcutils`, `legend-dataflow-hades`, `legend-metadata`
+* run `prodenv-install-sw` to install the software in `src`
 * run `snakemake` to populate the multi-tier data structure
 
-The typical workflow for exisitng production cycles is:
-* source the production enviroment `setup.sh`
-* modify the source code (`pygama`, `pyfcutils`, `legend-dataflow-hades`) 
+Workflow for existing production cycles:
+* source `setup.sh` to set some environmental variables
+* customize `pygama`, `pyfcutils`, `legend-dataflow-hades`, `legend-metadata`
 * run `prodenv-install-sw` to reinstall the software 
-* remove from the tier structure the files that need to be reprocessed
+* remove all files in `gen/` and `genpar/` that need to be reprocessed
 * run `snakemake` to update the multi-tier data structure
-
-A brief description of these steps is given in the following. Run the scripts with the option `-h` for further information on the arguments and options available.
 
 ### Source the setup file of the testing enviroment
 ```
 $ source setup.sh
 ```
 
-Sourcing the `setup.sh` file in the top directory of the testing environment will:
-* set environmental variables storing the path to the test environment
-* add the `bin` and `tools/bin` directory to the user's PATH to make scripts and tools available from command line
+Sourcing the `setup.sh` file located at the top level of the production environment. Sourcing the file will:
+* set data production environmental variables (the name of all variables start with PRODENV)
+* add `./bin/` and `./tools/bin/` to PATH, making scripts and tools available from command line
+
+The content of the source file can also be copied to the users's baschrc file. 
 
 ### Initialize a new production cycle
 ```
@@ -50,10 +51,18 @@ optional arguments:
   -r               create a production cycle under prod-ref
 ```
 
-The` testenv-init.sh` script generates a new production cycle in `prodenv/prod-usr`. This includes the directory structure and a few configuration files. It will also download a fresh version of `pygama`, `pyfcutils`, and `legend-dataflow-hades` from either the legend-exp organization (default) or a fork (specified through the option `-o organization-name`). It is possible to specify which branch to checkout through the `-b branch-name` option. When the option
-`-p path/to/my-src-dir` is specified, `pygama` and `pyfcutils` are not downloaded by linked to an existing src directory whose path gets stored in `config.json`. The option `-c` allows to customize the singularity container to be used for the data production.
+The only mandatory option of the script is `prod_tag`, i.e. the name of the production cycle. The scripts 
+generates a file-system structure under `./prod-usr/prod_tag/` and, by default, it clones:
+* `legend-dataflow-hades` under `./prod-usr/prod_tag/dataflow`
+* `pygama` under `./prod-usr/prod_tag/src/python/pygama`
+* `pyfcutils` under `./prod-usr/prod_tag/src/python/pyfcutils`
+By default, all packages are downloaded from the the `legend-exp` organization and set to the `master` branch. The name of the organization and branch name can set with the `-o organization-name` and `-b branch-name` options. Users might consider to fork all these packages and set as organization their github username.
 
-After initialization, the production cycle structure looks like this:
+When the option `-p path-to-custom-src-dir` is specified, `pygama` and `pyfcutils` are not downloaded. The path to the custom src directory is stored in `config.json`. The custom directory should contains a `pygama` and `pyfcutils` folder.
+
+The option `-c` allows to select the path of a specific singularity container. 
+
+The structure of the production cycle is:
 ```
 .
 ├── config.json
@@ -69,13 +78,11 @@ After initialization, the production cycle structure looks like this:
     └── default
 ```
 
-Description of file system:
-* each production cycle has a `./config.json` containing all configurations. This file can be edited by hand if needed.
-* `./dataflow` contains the `snakemake` configuration files. This repostiory can be edited to modify the data automatic data production
+*  `./config.json` contains paths to all main directories of the data production and 
+* `./dataflow` contains the `snakemake` configuration files. This repostiory can be edited to modify the data-flow 
 * `./gen`, `./genpar`, and `./log` are automatically generated during the dataproduction
-* `./src/python` contains the software used for data produciton. Users can edit this repositories and the software will be automatically installed.
+* `./src/python` contains the software used for data produciton. Users can edit these repositories. 
 * `./venv/` directory containing a link to the singularity container and the software compiled within the container
-
 
 ### Install the software
 ```
@@ -93,7 +100,7 @@ optional arguments:
 
 ```
 
-This script loads the container and install the software under `src`. For major changes in the code, the option `-r` can be used to fully re-install the code.
+This script loads the container and pip install `pygama` and `pyfcutils`. The option `-r` can be used to fully remove the installation directory before the software is re-installed. 
 
 ### Load Container
 ```
