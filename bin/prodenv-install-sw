@@ -32,7 +32,7 @@ def main():
         os.system('rm -rvf ' + venv_base_dir + '/default/user/.local')
 
     xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
-    os.putenv('VENV_EXTRA_OPTS', '-B ' + xdg_runtime_dir + ':' + xdg_runtime_dir)
+    os.putenv('VENV_EXTRA_OPTS', os.getenv('VENV_EXTRA_OPTS') + ' -B ' + xdg_runtime_dir + ':' + xdg_runtime_dir)
     os.putenv('VENV_BASE_DIR', venv_base_dir)
 
     os.system(venv_exec_cmd + ' ' + venv_exec_arg + ' python3 -m pip install -e ' + path_src + '/pyfcutils')
