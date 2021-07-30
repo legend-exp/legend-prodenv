@@ -56,6 +56,7 @@ generates a file-system structure under `./prod-usr/prod_tag/` and, by default, 
 * `legend-dataflow-hades` under `./prod-usr/prod_tag/dataflow`
 * `pygama` under `./prod-usr/prod_tag/src/python/pygama`
 * `pyfcutils` under `./prod-usr/prod_tag/src/python/pyfcutils`
+
 By default, all packages are downloaded from the `legend-exp` organization and set to the `master` branch. The name of the organization and branch name can set with the `-o organization-name` and `-b branch-name` options. Users might consider to fork all these packages and set as organization their github username.
 
 When the option `-p path-to-custom-src-dir` is specified, `pygama` and `pyfcutils` are not downloaded. The path to the custom src directory is stored in `config.json`. The custom directory should contains a `pygama` and `pyfcutils` folder.
