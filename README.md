@@ -8,7 +8,7 @@ Creation of a new production cycle:
 * run `prodenv-init-cycle` to initialize a new production cycle
 * customize the `config.json` file in the production cycle
 * check-out specific version of `pygama`, `pyfcutils`, `legend-dataflow-hades`, `legend-metadata`
-* run `prodenv-install-sw` to install the software in `src`
+* run `prodenv-install-sw` to install the software in `venv`
 * run `snakemake` to populate the multi-tier data structure
 
 Workflow for existing production cycles:
