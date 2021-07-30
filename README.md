@@ -120,12 +120,12 @@ optional arguments:
 It loads the container and all the software installed. Type exit to quit.
 
 ### Run Data Production
-Data can be automatically produced through 
+Data can be automatically produced through commands such as:
 ```
 snakemake --snakefile path-to-dataflow-dir/Snakefile -j20 --configfile=path-to-cycle/config.json all-B00000B-co_HS5_top_dlt-tier2.gen
 ```
 
-See https://github.com/legend-exp/legend-dataflow-hades for more infor
+Documentation on how to run snakemake is available at https://github.com/legend-exp/legend-dataflow-hades 
 
 
 ## Contacts
