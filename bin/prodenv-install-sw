@@ -5,7 +5,7 @@ import sys, json, os, string, argparse
 def main():
     parser = argparse.ArgumentParser(description='Install user software in data production enviroment')
     parser.add_argument('config_file', help='production cycle configuration file', type=str)
-    parser.add_argument('-r', help='remove software directory before installing software', type=str, action="store_true")
+    parser.add_argument('-r', help='remove software directory before installing software', action="store_true")
     args = parser.parse_args()
 
     if not os.path.isfile(args.config_file):
