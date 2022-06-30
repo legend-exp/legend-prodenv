@@ -4,11 +4,8 @@ import sys, json, os, string, argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Install user software in data production enviroment')
-    parser.add_argument('config_file', 
-                        help='production cycle configuration file')
-    parser.add_argument('-r',  
-                        help='remove software directory before installing software', 
-                        action="store_true")
+    parser.add_argument('config_file', help='production cycle configuration file', type=str)
+    parser.add_argument('-r', help='remove software directory before installing software', type=str, action="store_true")
     args = parser.parse_args()
 
     if not os.path.isfile(args.config_file):
@@ -18,17 +15,17 @@ def main():
     config_file_dir = os.path.dirname(os.path.abspath(args.config_file))
     config_dic = json.load(open(args.config_file))
 
-    exec_cmd = config_dic['setups']['l200']['execenv']['cmd']
-    exec_arg = config_dic['setups']['l200']['execenv']['arg']
-    path_src      = config_dic['setups']['l200']['paths']['src']
-    path_install  = config_dic['setups']['l200']['paths']['install']
-    path_cache    = config_dic['setups']['l200']['paths']['cache']
+    exec_cmd     = config_dic['setups']['l200']['execenv']['cmd']
+    exec_arg     = config_dic['setups']['l200']['execenv']['arg']
+    path_src     = config_dic['setups']['l200']['paths']['src']
+    path_install = config_dic['setups']['l200']['paths']['install']
+    path_cache   = config_dic['setups']['l200']['paths']['cache']
 
-    exec_cmd = string.Template(exec_cmd).substitute({'_': config_file_dir})
-    exec_arg = string.Template(exec_arg).substitute({'_': config_file_dir})
-    path_src      = string.Template(path_src).substitute({'_': config_file_dir})
-    path_install  = string.Template(path_install).substitute({'_': config_file_dir})
-    path_cache    = string.Template(path_cache).substitute({'_': config_file_dir})
+    exec_cmd     = string.Template(exec_cmd).substitute({'_': config_file_dir})
+    exec_arg     = string.Template(exec_arg).substitute({'_': config_file_dir})
+    path_src     = string.Template(path_src).substitute({'_': config_file_dir})
+    path_install = string.Template(path_install).substitute({'_': config_file_dir})
+    path_cache   = string.Template(path_cache).substitute({'_': config_file_dir})
 
     if args.r: 
         os.system('rm -rvf ' + path_install)

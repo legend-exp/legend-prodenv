@@ -3,21 +3,25 @@
 import sys, json, os, string, argparse
 
 def main():
-    parser = argparse.ArgumentParser(description='Load data production enviroment')
+    parser = argparse.ArgumentParser(description='Load data production enviroment and execute a given command')
     parser.add_argument('config_file', help='production cycle configuration file', type=str)
-    parser.add_argument('command', help='', type=str)
+    parser.add_argument('command', help='command to run within the container', type=str)
     args = parser.parse_args()
+
+    if not os.path.isfile(args.config_file):
+        print('Error: config file does not exist')
+        exit()
 
     config_file_dir = os.path.dirname(os.path.abspath(args.config_file))
     config_dic = json.load(open(args.config_file))
 
-    exec_cmd = config_dic['setups']['l200']['execenv']['cmd']
-    exec_arg = config_dic['setups']['l200']['execenv']['arg']
-    path_install  = config_dic['setups']['l200']['paths']['install']
+    exec_cmd     = config_dic['setups']['l200']['execenv']['cmd']
+    exec_arg     = config_dic['setups']['l200']['execenv']['arg']
+    path_install = config_dic['setups']['l200']['paths']['install']
 
-    exec_cmd = string.Template(exec_cmd).substitute({'_': config_file_dir})
-    exec_arg = string.Template(exec_arg).substitute({'_': config_file_dir})
-    path_install  = string.Template(path_install).substitute({'_': config_file_dir})
+    exec_cmd     = string.Template(exec_cmd).substitute({'_': config_file_dir})
+    exec_arg     = string.Template(exec_arg).substitute({'_': config_file_dir})
+    path_install = string.Template(path_install).substitute({'_': config_file_dir})
 
     xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
     if xdg_runtime_dir:
