@@ -4,28 +4,26 @@ import sys, json, os, string, argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Load data production enviroment')
-    parser.add_argument('config_file', help='production cycle configuration file')
+    parser.add_argument('config_file', help='production cycle configuration file', type=str)
+    parser.add_argument('command', help='', type=str)
     args = parser.parse_args()
-
-    if not os.path.isfile(args.config_file):
-        print('Error: config file does not exist')
-        exit()
 
     config_file_dir = os.path.dirname(os.path.abspath(args.config_file))
     config_dic = json.load(open(args.config_file))
 
-    venv_base_dir = config_dic['setups']['l200hades']['execenv']['default']['env']['VENV_BASE_DIR']
-    venv_exec_cmd = config_dic['setups']['l200hades']['execenv']['default']['exec'][0]
-    venv_exec_arg = config_dic['setups']['l200hades']['execenv']['default']['exec'][1]
+    exec_cmd = config_dic['setups']['l200']['execenv']['cmd']
+    exec_arg = config_dic['setups']['l200']['execenv']['arg']
+    path_install  = config_dic['setups']['l200']['paths']['install']
 
-    venv_base_dir = string.Template(venv_base_dir).substitute({'_': config_file_dir})
-    venv_exec_cmd = string.Template(venv_exec_cmd).substitute({'_': config_file_dir})
-    venv_exec_arg = string.Template(venv_exec_arg).substitute({'_': config_file_dir})
+    exec_cmd = string.Template(exec_cmd).substitute({'_': config_file_dir})
+    exec_arg = string.Template(exec_arg).substitute({'_': config_file_dir})
+    path_install  = string.Template(path_install).substitute({'_': config_file_dir})
 
     xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
-    os.putenv('VENV_EXTRA_OPTS', os.getenv('VENV_EXTRA_OPTS') + ' -B ' + xdg_runtime_dir + ':' + xdg_runtime_dir)
-    os.putenv('VENV_BASE_DIR', venv_base_dir)
-    os.system(venv_exec_cmd + " " + venv_exec_arg)
+    if xdg_runtime_dir:
+        os.system(f'PYTHONUSERBASE={path_install} {exec_cmd} -B {xdg_runtime_dir} {exec_arg} {args.command}')
+    else:
+        os.system(f'PYTHONUSERBASE={path_install} {exec_cmd} {exec_arg} {args.command}')
 
 if __name__=="__main__":
     main()
