@@ -1,9 +1,9 @@
 #!/usr/bin/env python3-snakemake
 
-repo_cfg_path = 'git@github.com:legend-exp/legend-dataflow-config.git
+repo_cfg_path = 'git@github.com:legend-exp/legend-dataflow-config.git'
 repo_cfg_branch = 'main'
 
-repo_par_overwrite_path = 'git@github.com:legend-exp/legend-dataflow-overrides.git
+repo_par_overwrite_path = 'git@github.com:legend-exp/legend-dataflow-overrides.git'
 repo_par_overwrite_branch = 'main'
 
 repo_pygama_path = 'git@github.com:legend-exp/pygama.git'
