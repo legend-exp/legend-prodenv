@@ -1,15 +1,15 @@
 #!/usr/bin/env python3-snakemake
 
-repo_cfg_path    = 'git@github.com:ggmarshall/legend_cfg.git'
-repo_cfg_branch   = 'main'
+repo_cfg_path = 'git@github.com:legend-exp/legend-dataflow-config.git
+repo_cfg_branch = 'main'
 
-repo_par_overwrite_path      = 'git@github.com:ggmarshall/legend_par_overwrite.git'
-repo_par_overwrite_branch     = 'main'
+repo_par_overwrite_path = 'git@github.com:legend-exp/legend-dataflow-overrides.git
+repo_par_overwrite_branch = 'main'
 
-repo_pygama_path    = 'git@github.com:legend-exp/pygama.git'
-repo_pygama_branch   = 'main'
+repo_pygama_path = 'git@github.com:legend-exp/pygama.git'
+repo_pygama_branch = 'main'
 
-repo_dataflow_path  = 'git@github.com:legend-exp/legend-dataflow.git'
+repo_dataflow_path = 'git@github.com:legend-exp/legend-dataflow.git'
 repo_dataflow_branch = 'master'
 
 import sys, json, os, string, argparse
@@ -70,6 +70,7 @@ def main():
                         "plt":            "$_/generated/plt",
                         "tmp_log":        "$_/generated/tmp/log",
                         "tmp_par":        "$_/generated/tmp/par",
+			"tmp_plt":        "$_/generated/tmp/plt",
                         "src":            "$_/software/python/src",
                         "install":        "$_/software/python/install",
                         "cache":          "$_/software/python/cache"
