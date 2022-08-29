@@ -1,11 +1,11 @@
 #!/usr/bin/env python3-snakemake
 
-import sys, json, os, string, argparse
+import sys, json, os, string, argparse, subprocess
 
 def main():
     parser = argparse.ArgumentParser(description='Load data production enviroment and execute a given command')
     parser.add_argument('config_file', help='production cycle configuration file', type=str)
-    parser.add_argument('command', help='command to run within the container', type=str)
+    parser.add_argument('command', help='command to run within the container', type=str, nargs='+')
     args = parser.parse_args()
 
     if not os.path.isfile(args.config_file):
@@ -25,9 +25,9 @@ def main():
 
     xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
     if xdg_runtime_dir:
-        os.system(f'PYTHONUSERBASE={path_install} {exec_cmd} -B {xdg_runtime_dir} {exec_arg} {args.command}')
+        subprocess.run([*(exec_cmd.split()), '-B', xdg_runtime_dir, exec_arg, *args.command], env={'PYTHONUSERBASE': path_install})
     else:
-        os.system(f'PYTHONUSERBASE={path_install} {exec_cmd} {exec_arg} {args.command}')
+        subprocess.run([*(exec_cmd.split()), exec_arg, *args.command], env={'PYTHONUSERBASE': path_install})
 
 if __name__=="__main__":
     main()
