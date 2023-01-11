@@ -4,11 +4,8 @@ import sys, json, os, string, argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Install user software in data production enviroment')
-    parser.add_argument('config_file', 
-                        help='production cycle configuration file')
-    parser.add_argument('-r',  
-                        help='remove software directory before installing software', 
-                        action="store_true")
+    parser.add_argument('config_file', help='production cycle configuration file', type=str)
+    parser.add_argument('-r', help='remove software directory before installing software', action="store_true")
     args = parser.parse_args()
 
     if not os.path.isfile(args.config_file):
@@ -18,25 +15,23 @@ def main():
     config_file_dir = os.path.dirname(os.path.abspath(args.config_file))
     config_dic = json.load(open(args.config_file))
 
-    venv_base_dir = config_dic['setups']['l200hades']['execenv']['default']['env']['VENV_BASE_DIR']
-    venv_exec_cmd = config_dic['setups']['l200hades']['execenv']['default']['exec'][0]
-    venv_exec_arg = config_dic['setups']['l200hades']['execenv']['default']['exec'][1]
-    path_src      = config_dic['setups']['l200hades']['paths']['src']['python']
+    exec_cmd     = config_dic['setups']['l200']['execenv']['cmd']
+    exec_arg     = config_dic['setups']['l200']['execenv']['arg']
+    path_src     = config_dic['setups']['l200']['paths']['src']
+    path_install = config_dic['setups']['l200']['paths']['install']
+    path_cache   = config_dic['setups']['l200']['paths']['cache']
 
-    venv_base_dir = string.Template(venv_base_dir).substitute({'_': config_file_dir})
-    venv_exec_cmd = string.Template(venv_exec_cmd).substitute({'_': config_file_dir})
-    venv_exec_arg = string.Template(venv_exec_arg).substitute({'_': config_file_dir})
-    path_src      = string.Template(path_src).substitute({'_': config_file_dir})
+    exec_cmd     = string.Template(exec_cmd).substitute({'_': config_file_dir})
+    exec_arg     = string.Template(exec_arg).substitute({'_': config_file_dir})
+    path_src     = string.Template(path_src).substitute({'_': config_file_dir})
+    path_install = string.Template(path_install).substitute({'_': config_file_dir})
+    path_cache   = string.Template(path_cache).substitute({'_': config_file_dir})
 
     if args.r: 
-        os.system('rm -rvf ' + venv_base_dir + '/default/user/.local')
+        os.system('rm -rvf ' + path_install)
+        os.system('rm -rvf ' + path_cache)
 
-    xdg_runtime_dir = os.getenv('XDG_RUNTIME_DIR')
-    os.putenv('VENV_EXTRA_OPTS', os.getenv('VENV_EXTRA_OPTS') + ' -B ' + xdg_runtime_dir + ':' + xdg_runtime_dir)
-    os.putenv('VENV_BASE_DIR', venv_base_dir)
-
-    os.system(venv_exec_cmd + ' ' + venv_exec_arg + ' python3 -m pip install -e ' + path_src + '/pyfcutils')
-    os.system(venv_exec_cmd + ' ' + venv_exec_arg + ' python3 -m pip install -e ' + path_src + '/pygama')
+    os.system(f'PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} {exec_cmd} {exec_arg} python3 -B -m pip install {path_src}/pygama[daq]')
 
 if __name__=="__main__":
     main()

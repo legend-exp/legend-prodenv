@@ -2,3 +2,4 @@ prod-usr/
 prod-ref/
 tools/
 bin/snakemake
+containers
