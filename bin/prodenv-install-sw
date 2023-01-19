@@ -32,6 +32,7 @@ def main():
         os.system('rm -rvf ' + path_cache)
 
     os.system(f'PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} {exec_cmd} {exec_arg} python3 -B -m pip install {path_src}/pygama[daq]')
+    os.system(f'PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} {exec_cmd} {exec_arg} python3 -B -m pip install {path_src}/pylegendmeta[daq]')
 
 if __name__=="__main__":
     main()
