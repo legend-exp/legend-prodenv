@@ -51,7 +51,7 @@ def main():
                                 
                                 "metadata":       "$_/inputs",
                                 "config":         "$_/inputs/dataprod/config",
-                                "par_overwrite":  "$_/inputs/dataprod/par_overwrite",
+                                "par_overwrite":  "$_/inputs/dataprod/overrides",
                                 "chan_map":       "$_/inputs/hardware/configuration",
                                 "detector_db":    "$_/inputs/hardware/detectors",
 
