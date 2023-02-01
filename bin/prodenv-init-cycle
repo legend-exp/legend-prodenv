@@ -45,6 +45,7 @@ def main():
                     "setups": {
                         "l200": {
                             "paths": {
+				"unsorted":       "/data1/shared/l200/l200-daq/sandbox",
                                 "orig":           "/data1/shared/l60/l60-daq/daq-v01",
 
                                 "dataflow":       "$_/dataflow",
