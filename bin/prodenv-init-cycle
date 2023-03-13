@@ -1,8 +1,5 @@
 #!/usr/bin/env python3-snakemake
 
-repo_metadata_path = 'https://github.com/legend-exp/legend-metadata.git'
-repo_metadata_branch = 'main'
-
 repo_pygama_path = 'git@github.com:legend-exp/pygama.git'
 repo_pygama_branch = 'main'
 
@@ -10,7 +7,10 @@ repo_pylegendmeta_path = 'https://github.com/legend-exp/pylegendmeta.git'
 repo_pylegendmeta_branch = 'main'
 
 repo_dataflow_path = 'git@github.com:legend-exp/legend-dataflow.git'
-repo_dataflow_branch = 'master'
+repo_dataflow_branch = 'main'
+
+repo_metadata_path = 'https://github.com/legend-exp/legend-metadata.git'
+repo_metadata_branch = 'main'
 
 import sys, json, os, string, argparse
 
@@ -22,14 +22,10 @@ def main():
 
     parser = argparse.ArgumentParser(description='Initialize a new production cycle')
     parser.add_argument('rpath', help='relative path of directory in which the production cycle will be created', default='')
+    parser.add_argument('-c', help='clone pygama and pylegendmeta', action="store_true")
     args = parser.parse_args()
 
-
-    if args.ref_cycle is True:
-        path_cycle = f'{os.getenv("PRODENV")}/{args.rpath}'
-    else:
-        path_cycle = f'{os.getenv("PRODENV")}/{args.rpath}'
-
+    path_cycle = f'{os.getenv("PRODENV")}/{args.rpath}'
     if os.path.isdir(path_cycle):
         print('Error: data production cycle at this path already exists')
         exit()
@@ -79,7 +75,7 @@ def main():
                          },
                          "execenv": {
                            "cmd": "apptainer run",
-                           "arg": "/data1/shared/l60/l60-prodven-v1/containers/legendexp_legend-base_latest.sif"
+                           "arg": "/data2/public/prodenv/containers/legendexp_legend-base_latest.sif"
                          }
                        }
                      }
@@ -89,22 +85,22 @@ def main():
     with open(path_cycle + '/config.json', 'w') as outfile:
         json.dump(config_file, outfile, ensure_ascii=False, indent=4)
 
+    if args.c: 
+        tmp_path = config_file["setups"]["l200"]["paths"]["src"]
+        tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
+        os.system(f'\git clone {repo_pygama_path} {tmp_path}/pygama --branch {repo_pygama_branch}')
 
-    tmp_path = config_file["setups"]["l200"]["paths"]["metadata"]
-    tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
-    os.system(f'\git clone {repo_metadata_path} {tmp_path} --branch {repo_metadata_branch} --recurse-submodules ')
+        tmp_path = config_file["setups"]["l200"]["paths"]["src"]
+        tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
+        os.system(f'\git clone {repo_pylegendmeta_path} {tmp_path}/pylegendmeta --branch {repo_pylegendmeta_branch}')
 
     tmp_path = config_file["setups"]["l200"]["paths"]["dataflow"]
     tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
     os.system(f'\git clone {repo_dataflow_path} {tmp_path} --branch {repo_dataflow_branch}')
 
-    tmp_path = config_file["setups"]["l200"]["paths"]["src"]
+    tmp_path = config_file["setups"]["l200"]["paths"]["metadata"]
     tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
-    os.system(f'\git clone {repo_pygama_path} {tmp_path}/pygama --branch {repo_pygama_branch}')
-
-    tmp_path = config_file["setups"]["l200"]["paths"]["src"]
-    tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
-    os.system(f'\git clone {repo_pylegendmeta_path} {tmp_path}/pylegendmeta --branch {repo_pylegendmeta_branch}')
+    os.system(f'\git clone {repo_metadata_path} {tmp_path} --branch {repo_metadata_branch} --recurse-submodules ')
 
 if __name__=="__main__":
     main()
