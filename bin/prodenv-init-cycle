@@ -21,18 +21,17 @@ def main():
         exit()
 
     parser = argparse.ArgumentParser(description='Initialize a new production cycle')
-    parser.add_argument('prod_tag', help='name of directory in which the production cycle is created', default='')
-    parser.add_argument('-r', dest='ref_cycle', action='store_true',  help='create a production cycle under prod-ref') 
+    parser.add_argument('rpath', help='relative path of directory in which the production cycle will be created', default='')
     args = parser.parse_args()
 
 
     if args.ref_cycle is True:
-        path_cycle = f'{os.getenv("PRODENV")}/prod-ref/{args.prod_tag}'
+        path_cycle = f'{os.getenv("PRODENV")}/{args.rpath}'
     else:
-        path_cycle = f'{os.getenv("PRODENV")}/prod-usr/{args.prod_tag}'
+        path_cycle = f'{os.getenv("PRODENV")}/{args.rpath}'
 
     if os.path.isdir(path_cycle):
-        print('Error: data production cycle with this tag already exists')
+        print('Error: data production cycle at this path already exists')
         exit()
 
     ###############################################################################
@@ -43,49 +42,48 @@ def main():
     # Create json config file
     config_file = {
                     "setups": {
-                        "l200": {
-                            "paths": {
-				"unsorted":       "/data1/shared/l200/l200-daq/sandbox",
-                                "orig":           "/data1/shared/l60/l60-daq/daq-v01",
+                      "l200": {
+                        "paths": {
+                          "tier_daq":        "",
 
-                                "dataflow":       "$_/dataflow",
-                                
-                                "metadata":       "$_/inputs",
-                                "config":         "$_/inputs/dataprod/config",
-                                "par_overwrite":  "$_/inputs/dataprod/overrides",
-                                "chan_map":       "$_/inputs/hardware/configuration",
-                                "detector_db":    "$_/inputs/hardware/detectors",
+                          "dataflow":       "$_/dataflow",
+                          
+                          "metadata":       "$_/inputs",
+                          "config":         "$_/inputs/dataprod/config",
+                          "par_overwrite":  "$_/inputs/dataprod/overrides",
+                          "chan_map":       "$_/inputs/hardware/configuration",
+                          "detector_db":    "$_/inputs/hardware/detectors",
 
-                                "tier":           "$_/generated/tier",
-                                "tier_raw":       "$_/generated/tier/raw",
-                                "tier_tcm":       "$_/generated/tier/tcm",
-                                "tier_dsp":       "$_/generated/tier/dsp",
-                                "tier_hit":       "$_/generated/tier/hit",
-                                "tier_evt":       "$_/generated/tier/evt",
+                          "tier":           "$_/generated/tier",
+                          "tier_raw":       "$_/generated/tier/raw",
+                          "tier_tcm":       "$_/generated/tier/tcm",
+                          "tier_dsp":       "$_/generated/tier/dsp",
+                          "tier_hit":       "$_/generated/tier/hit",
+                          "tier_evt":       "$_/generated/tier/evt",
 
-                                "par":            "$_/generated/par",
-                                "par_raw":        "$_/generated/par/raw",
-                                "par_tcm":        "$_/generated/par/tcm",
-                                "par_dsp":        "$_/generated/par/dsp",
-                                "par_hit":        "$_/generated/par/hit",
-                                "par_evt":        "$_/generated/par/evt",
+                          "par":            "$_/generated/par",
+                          "par_raw":        "$_/generated/par/raw",
+                          "par_tcm":        "$_/generated/par/tcm",
+                          "par_dsp":        "$_/generated/par/dsp",
+                          "par_hit":        "$_/generated/par/hit",
+                          "par_evt":        "$_/generated/par/evt",
 
-                                "plt":            "$_/generated/plt",
-                                "tmp_plt":        "$_/generated/tmp/plt",
-                                "tmp_log":        "$_/generated/tmp/log",
-                                "tmp_filelists":  "$_/generated/tmp/filelists",
-                                "tmp_par":        "$_/generated/tmp/par",
-                                "src":            "$_/software/python/src",
-                                "install":        "$_/software/python/install",
-                                "cache":          "$_/software/python/cache"
-                            },
-                            "execenv": {
-                                "cmd": "apptainer run",
-                                "arg": "/data1/shared/l60/l60-prodven-v1/containers/legendexp_legend-base_latest.sif"
-                            }
-                        }
-                    }
-                    }
+                          "plt":            "$_/generated/plt",
+                          "tmp_plt":        "$_/generated/tmp/plt",
+                          "tmp_log":        "$_/generated/tmp/log",
+                          "tmp_filelists":  "$_/generated/tmp/filelists",
+                          "tmp_par":        "$_/generated/tmp/par",
+                          "src":            "$_/software/python/src",
+                          "install":        "$_/software/python/install",
+                          "cache":          "$_/software/python/cache"
+                         },
+                         "execenv": {
+                           "cmd": "apptainer run",
+                           "arg": "/data1/shared/l60/l60-prodven-v1/containers/legendexp_legend-base_latest.sif"
+                         }
+                       }
+                     }
+                   }
 
 
     with open(path_cycle + '/config.json', 'w') as outfile:
