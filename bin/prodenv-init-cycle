@@ -65,10 +65,13 @@ def main():
                           "par_evt":        "$_/generated/par/evt",
 
                           "plt":            "$_/generated/plt",
+                          "log":            "$_/generated/log",
+
                           "tmp_plt":        "$_/generated/tmp/plt",
                           "tmp_log":        "$_/generated/tmp/log",
                           "tmp_filelists":  "$_/generated/tmp/filelists",
                           "tmp_par":        "$_/generated/tmp/par",
+
                           "src":            "$_/software/python/src",
                           "install":        "$_/software/python/install",
                           "cache":          "$_/software/python/cache"
