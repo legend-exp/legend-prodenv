@@ -1,6 +1,9 @@
 #!/usr/bin/env python3-snakemake
 
-import sys, json, os, string, argparse
+import json, os, string, argparse
+
+pygama_distro = "pygama~=1.3"
+pylegendmeta_distro = "pylegendmeta~=0.7"
 
 def main():
     parser = argparse.ArgumentParser(description='Install user software in data production enviroment')
@@ -31,8 +34,18 @@ def main():
         os.system('rm -rvf ' + path_install)
         os.system('rm -rvf ' + path_cache)
 
-    os.system(f'PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} {exec_cmd} {exec_arg} python3 -B -m pip install {path_src}/pygama[daq]')
-    os.system(f'PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} {exec_cmd} {exec_arg} python3 -B -m pip install {path_src}/pylegendmeta[daq]')
+    if os.path.exists(os.path.join(path_src, "pygama")):
+        pygama_distro = os.path.join(path_src, "pygama")
+    if os.path.exists(os.path.join(path_src, "pylegendmeta")):
+        pygama_distro = os.path.join(path_src, "pylegendmeta")
+
+    os.system(
+        f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
+        f"{exec_cmd} {exec_arg} python3 -B -m pip install "
+        f"{pygama_distro} {pylegendmeta_distro}"
+    )
 
 if __name__=="__main__":
     main()
+
+# vim: ft=python
