@@ -3,7 +3,7 @@
 import sys, json, os, string, argparse, subprocess
 
 def main():
-    parser = argparse.ArgumentParser(description='Load data production enviroment and execute a given command')
+    parser = argparse.ArgumentParser(description='Load data production environment and execute a given command')
     parser.add_argument('config_file', help='production cycle configuration file', type=str)
     parser.add_argument('command', help='command to run within the container', type=str, nargs='+')
     args = parser.parse_args()

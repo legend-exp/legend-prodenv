@@ -27,7 +27,7 @@ def main():
     path_install = string.Template(path_install).substitute({'_': config_file_dir})
     path_cache   = string.Template(path_cache).substitute({'_': config_file_dir})
 
-    if args.r: 
+    if args.r:
         os.system('rm -rvf ' + path_install)
         os.system('rm -rvf ' + path_cache)
 

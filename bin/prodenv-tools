@@ -1,16 +1,27 @@
 #!/bin/bash
 
-ORIGDIR=$PWD
-\mkdir -p $PRODENV/tools/bin
-\cd $PRODENV/tools
+origdir=$(pwd)
+mkdir -p "$PRODENV/tools/bin"
+cd "$PRODENV/tools" || exit
 
-# install snakemake
-\curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh -o Mambaforge-Linux-x86_64.sh
-\bash Mambaforge-Linux-x86_64.sh -b -u -p snakemake-mambaforge3/
-snakemake-mambaforge3/bin/mamba create -y -c conda-forge -c bioconda -n snakemake snakemake-minimal panoptes-ui jinja2
-\ln -s ../snakemake-mambaforge3/envs/snakemake/bin/snakemake bin/
-\ln -s ../snakemake-mambaforge3/envs/snakemake/bin/python3 bin/python3-snakemake
-\ln -s ../snakemake-mambaforge3/envs/snakemake/bin/panoptes bin/
-\rm Mambaforge-Linux-x86_64.sh 
+system="$(uname)-$(uname -m)"
 
-cd $ORIGDIR
+# install mamba
+curl -LO "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$system.sh"
+bash "Mambaforge-$system.sh" -b -u -p snakemake-mambaforge3/
+
+# create mamba env with snakemake
+snakemake-mambaforge3/bin/mamba create --yes \
+    --name snakemake \
+    --channel conda-forge \
+    --channel bioconda \
+    -- snakemake-minimal panoptes-ui jinja2
+
+# make exes visible
+ln -fs ../snakemake-mambaforge3/envs/snakemake/bin/snakemake bin/
+ln -fs ../snakemake-mambaforge3/envs/snakemake/bin/python3 bin/python3-snakemake
+ln -fs ../snakemake-mambaforge3/envs/snakemake/bin/panoptes bin/
+
+# cleanup
+rm "Mambaforge-$system.sh"
+cd "$origdir" || exit

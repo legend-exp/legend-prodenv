@@ -15,7 +15,7 @@ repo_metadata_branch = 'main'
 import sys, json, os, string, argparse
 
 def main():
-    # check existance of env vars
+    # check existence of env vars
     if os.getenv('PRODENV') == '':
         print('Error: source setup.sh before continuing')
         exit()
@@ -31,7 +31,7 @@ def main():
         exit()
 
     ###############################################################################
-    # Build new production enviroment
+    # Build new production environment
     ###############################################################################
     os.makedirs(path_cycle)
 
@@ -43,7 +43,7 @@ def main():
                           "tier_daq":        "",
 
                           "dataflow":       "$_/dataflow",
-                          
+
                           "metadata":       "$_/inputs",
                           "config":         "$_/inputs/dataprod/config",
                           "par_overwrite":  "$_/inputs/dataprod/overrides",
@@ -88,7 +88,7 @@ def main():
     with open(path_cycle + '/config.json', 'w') as outfile:
         json.dump(config_file, outfile, ensure_ascii=False, indent=4)
 
-    if args.c: 
+    if args.c:
         tmp_path = config_file["setups"]["l200"]["paths"]["src"]
         tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
         os.system(f'\git clone {repo_pygama_path} {tmp_path}/pygama --branch {repo_pygama_branch}')
