@@ -1,111 +1,118 @@
-#!/usr/bin/env python3-snakemake
+#!/usr/bin/env python
+from __future__ import annotations
 
-repo_pygama_path = 'git@github.com:legend-exp/pygama.git'
-repo_pygama_branch = 'main'
+import argparse
+import json
+import os
+import string
+from pathlib import Path
 
-repo_pylegendmeta_path = 'https://github.com/legend-exp/pylegendmeta.git'
-repo_pylegendmeta_branch = 'main'
+repo_pygama_path = "git@github.com:legend-exp/pygama.git"
+repo_pygama_branch = "main"
 
-repo_dataflow_path = 'git@github.com:legend-exp/legend-dataflow.git'
-repo_dataflow_branch = 'main'
+repo_pylegendmeta_path = "https://github.com/legend-exp/pylegendmeta.git"
+repo_pylegendmeta_branch = "main"
 
-repo_metadata_path = 'https://github.com/legend-exp/legend-metadata.git'
-repo_metadata_branch = 'main'
+repo_dataflow_path = "git@github.com:legend-exp/legend-dataflow.git"
+repo_dataflow_branch = "main"
 
-import sys, json, os, string, argparse
+repo_metadata_path = "https://github.com/legend-exp/legend-metadata.git"
+repo_metadata_branch = "main"
+
 
 def main():
     # check existence of env vars
-    if os.getenv('PRODENV') == '':
-        print('Error: source setup.sh before continuing')
-        exit()
+    if not os.getenv("PRODENV"):
+        msg = "source setup.sh before continuing"
+        raise RuntimeError(msg)
 
-    parser = argparse.ArgumentParser(description='Initialize a new production cycle')
-    parser.add_argument('rpath', help='relative path of directory in which the production cycle will be created', default='')
-    parser.add_argument('-c', help='clone pygama and pylegendmeta', action="store_true")
+    parser = argparse.ArgumentParser(description="Initialize a new production cycle")
+    parser.add_argument(
+        "rpath",
+        help="relative path of directory in which the production cycle will be created",
+        default="",
+    )
+    parser.add_argument("-c", help="clone pygama and pylegendmeta", action="store_true")
     args = parser.parse_args()
 
-    path_cycle = f'{os.getenv("PRODENV")}/{args.rpath}'
-    if os.path.isdir(path_cycle):
-        print('Error: data production cycle at this path already exists')
-        exit()
-
-    ###############################################################################
-    # Build new production environment
-    ###############################################################################
-    os.makedirs(path_cycle)
+    path_cycle = Path(os.getenv("PRODENV")) / args.rpath
+    path_cycle.mkdir(parents=True)
 
     # Create json config file
     config_file = {
-                    "setups": {
-                      "l200": {
-                        "paths": {
-                          "tier_daq":        "",
+        "setups": {
+            "l200": {
+                "paths": {
+                    "tier_daq": "",
+                    "dataflow": "$_/dataflow",
+                    "metadata": "$_/inputs",
+                    "config": "$_/inputs/dataprod/config",
+                    "par_overwrite": "$_/inputs/dataprod/overrides",
+                    "chan_map": "$_/inputs/hardware/configuration",
+                    "detector_db": "$_/inputs/hardware/detectors",
+                    "tier": "$_/generated/tier",
+                    "tier_raw": "$_/generated/tier/raw",
+                    "tier_tcm": "$_/generated/tier/tcm",
+                    "tier_dsp": "$_/generated/tier/dsp",
+                    "tier_hit": "$_/generated/tier/hit",
+                    "tier_evt": "$_/generated/tier/evt",
+                    "par": "$_/generated/par",
+                    "par_raw": "$_/generated/par/raw",
+                    "par_tcm": "$_/generated/par/tcm",
+                    "par_dsp": "$_/generated/par/dsp",
+                    "par_hit": "$_/generated/par/hit",
+                    "par_evt": "$_/generated/par/evt",
+                    "plt": "$_/generated/plt",
+                    "log": "$_/generated/log",
+                    "tmp_plt": "$_/generated/tmp/plt",
+                    "tmp_log": "$_/generated/tmp/log",
+                    "tmp_filelists": "$_/generated/tmp/filelists",
+                    "tmp_par": "$_/generated/tmp/par",
+                    "src": "$_/software/python/src",
+                    "install": "$_/software/python/install",
+                    "cache": "$_/software/python/cache",
+                },
+                "execenv": {
+                    "cmd": "apptainer run",
+                    "arg": "/data2/public/prodenv/containers/legendexp_legend-base_latest.sif",
+                },
+            }
+        }
+    }
 
-                          "dataflow":       "$_/dataflow",
-
-                          "metadata":       "$_/inputs",
-                          "config":         "$_/inputs/dataprod/config",
-                          "par_overwrite":  "$_/inputs/dataprod/overrides",
-                          "chan_map":       "$_/inputs/hardware/configuration",
-                          "detector_db":    "$_/inputs/hardware/detectors",
-
-                          "tier":           "$_/generated/tier",
-                          "tier_raw":       "$_/generated/tier/raw",
-                          "tier_tcm":       "$_/generated/tier/tcm",
-                          "tier_dsp":       "$_/generated/tier/dsp",
-                          "tier_hit":       "$_/generated/tier/hit",
-                          "tier_evt":       "$_/generated/tier/evt",
-
-                          "par":            "$_/generated/par",
-                          "par_raw":        "$_/generated/par/raw",
-                          "par_tcm":        "$_/generated/par/tcm",
-                          "par_dsp":        "$_/generated/par/dsp",
-                          "par_hit":        "$_/generated/par/hit",
-                          "par_evt":        "$_/generated/par/evt",
-
-                          "plt":            "$_/generated/plt",
-                          "log":            "$_/generated/log",
-
-                          "tmp_plt":        "$_/generated/tmp/plt",
-                          "tmp_log":        "$_/generated/tmp/log",
-                          "tmp_filelists":  "$_/generated/tmp/filelists",
-                          "tmp_par":        "$_/generated/tmp/par",
-
-                          "src":            "$_/software/python/src",
-                          "install":        "$_/software/python/install",
-                          "cache":          "$_/software/python/cache"
-                         },
-                         "execenv": {
-                           "cmd": "apptainer run",
-                           "arg": "/data2/public/prodenv/containers/legendexp_legend-base_latest.sif"
-                         }
-                       }
-                     }
-                   }
-
-
-    with open(path_cycle + '/config.json', 'w') as outfile:
+    with Path.open(path_cycle / "config.json", "w") as outfile:
         json.dump(config_file, outfile, ensure_ascii=False, indent=4)
 
     if args.c:
         tmp_path = config_file["setups"]["l200"]["paths"]["src"]
-        tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
-        os.system(f'\git clone {repo_pygama_path} {tmp_path}/pygama --branch {repo_pygama_branch}')
+        tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
+        os.system(
+            f"git clone {repo_pygama_path} {tmp_path}/pygama "
+            f"--branch {repo_pygama_branch}"
+        )
 
         tmp_path = config_file["setups"]["l200"]["paths"]["src"]
-        tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
-        os.system(f'\git clone {repo_pylegendmeta_path} {tmp_path}/pylegendmeta --branch {repo_pylegendmeta_branch}')
+        tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
+        os.system(
+            f"git clone {repo_pylegendmeta_path} "
+            f"{tmp_path}/pylegendmeta --branch {repo_pylegendmeta_branch}"
+        )
 
     tmp_path = config_file["setups"]["l200"]["paths"]["dataflow"]
-    tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
-    os.system(f'\git clone {repo_dataflow_path} {tmp_path} --branch {repo_dataflow_branch}')
+    tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
+    os.system(
+        f"git clone {repo_dataflow_path} {tmp_path} --branch {repo_dataflow_branch}"
+    )
 
     tmp_path = config_file["setups"]["l200"]["paths"]["metadata"]
-    tmp_path = string.Template(tmp_path).substitute({'_': path_cycle})
-    os.system(f'\git clone {repo_metadata_path} {tmp_path} --branch {repo_metadata_branch} --recurse-submodules ')
+    tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
+    os.system(
+        f"git clone {repo_metadata_path} {tmp_path} "
+        f"--branch {repo_metadata_branch} --recurse-submodules"
+    )
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
 
 # vim: ft=python
