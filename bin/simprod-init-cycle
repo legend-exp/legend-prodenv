@@ -14,7 +14,8 @@ repo_metadata = ("https://github.com/legend-exp/legend-metadata.git", "main")
 def main():
     # check existence of env vars
     if not os.getenv("PRODENV"):
-        RuntimeError("source setup.sh before continuing")
+        msg = "source setup.sh before continuing"
+        raise RuntimeError(msg)
 
     parser = argparse.ArgumentParser(description="Initialize a new production cycle")
     parser.add_argument(
@@ -30,28 +31,45 @@ def main():
     # Create json config file
     config_file = {
         "setups": {
-            "l200": {
+            "l200a": {
                 "paths": {
-                    "tier_daq": "",
-                    "simflow": "$_/simflow",
+                    "simflow": "$_/workflow",
                     "metadata": "$_/inputs",
                     "config": "$_/inputs/simprod/config",
-                    "chan_map": "$_/inputs/hardware/configuration",
-                    "detector_db": "$_/inputs/hardware/detectors",
-                    "tier": "$_/generated/tier",
-                    "tier_mac": "$_/generated/tier/mac",
+                    "tier_mac": "$_/generated/tier/ver",
                     "tier_raw": "$_/generated/tier/raw",
                     "tier_evt": "$_/generated/tier/evt",
                     "tier_pdf": "$_/generated/tier/pdf",
+                    "macros": "$_/generated/macros",
                     "plt": "$_/generated/plt",
                     "log": "$_/generated/log",
                     "src": "$_/software/python/src",
                     "install": "$_/software/python/install",
                     "cache": "$_/software/python/cache",
                 },
+                "filetypes": {
+                    "input": {
+                        "ver": ".mac",
+                        "raw": ".mac",
+                        "evt": ".root",
+                        "pdf": ".root",
+                    },
+                    "output": {
+                        "ver": ".root",
+                        "raw": ".root",
+                        "evt": ".root",
+                        "pdf": ".root",
+                    },
+                },
+                "runcmd": {
+                    "ver": "MaGe {input} &> {log}",
+                    "raw": "MaGe {input} &> {log}",
+                    "evt": "mage-post-proc {} &> {log}",
+                    "pdf": "{} &> {log}",
+                },
                 "execenv": {
-                    "cmd": "apptainer run",
-                    "arg": "/data2/public/prodenv/containers/legendexp_legend-base_latest.sif",
+                    "cmd": "shifter",
+                    "arg": "--image=legendexp/legend-base:private",
                 },
             }
         }
@@ -74,5 +92,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# vim: ft=python
