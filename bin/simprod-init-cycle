@@ -78,11 +78,11 @@ def main():
     with Path.open(path_cycle / "config.json", "w") as outfile:
         json.dump(config_file, outfile, ensure_ascii=False, indent=4)
 
-    tmp_path = config_file["setups"]["l200"]["paths"]["simflow"]
+    tmp_path = config_file["setups"]["l200a"]["paths"]["simflow"]
     tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
     os.system(f"git clone {repo_simflow[0]} {tmp_path} --branch {repo_simflow[1]}")
 
-    tmp_path = config_file["setups"]["l200"]["paths"]["metadata"]
+    tmp_path = config_file["setups"]["l200a"]["paths"]["metadata"]
     tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
     os.system(
         f"git clone {repo_metadata[0]} {tmp_path} "
