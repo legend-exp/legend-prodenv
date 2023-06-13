@@ -17,10 +17,12 @@ snakemake-mambaforge3/bin/mamba create --yes \
     --channel bioconda \
     -- snakemake-minimal panoptes-ui jinja2
 
+condaenv=$(snakemake-mambaforge3/bin/mamba info --quiet --envs | grep '^snakemake */' | awk '{print $2}')
+
 # make exes visible
-ln -fs ../snakemake-mambaforge3/envs/snakemake/bin/snakemake bin/
-ln -fs ../snakemake-mambaforge3/envs/snakemake/bin/python3 bin/python3-snakemake
-ln -fs ../snakemake-mambaforge3/envs/snakemake/bin/panoptes bin/
+ln -fs "$condaenv/bin/snakemake" bin/
+ln -fs "$condaenv/bin/python3" bin/python3-snakemake
+ln -fs "$condaenv/bin/panoptes" bin/
 
 # cleanup
 rm "Mambaforge-$system.sh"
