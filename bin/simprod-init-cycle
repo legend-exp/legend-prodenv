@@ -8,7 +8,8 @@ import string
 from pathlib import Path
 
 repo_simflow = ("git@github.com:legend-exp/legend-simflow.git", "main")
-repo_metadata = ("https://github.com/legend-exp/legend-metadata.git", "main")
+repo_metadata = ("git@github.com:legend-exp/legend-metadata.git", "main")
+repo_mage = ("git@github.com:mppmu/MaGe.git", "main")
 
 
 def main():
@@ -32,17 +33,22 @@ def main():
     config_file = {
         "setups": {
             "l200a": {
+                "benchmark": {
+                    "enabled": False,
+                    "n_primaries": 5000,
+                },
                 "paths": {
                     "simflow": "$_/workflow",
                     "metadata": "$_/inputs",
                     "config": "$_/inputs/simprod/config",
-                    "tier_mac": "$_/generated/tier/ver",
+                    "tier_ver": "$_/generated/tier/ver",
                     "tier_raw": "$_/generated/tier/raw",
                     "tier_evt": "$_/generated/tier/evt",
                     "tier_pdf": "$_/generated/tier/pdf",
                     "macros": "$_/generated/macros",
                     "plt": "$_/generated/plt",
                     "log": "$_/generated/log",
+                    "benchmarks": "$_/generated/benchmarks",
                     "src": "$_/software/python/src",
                     "install": "$_/software/python/install",
                     "cache": "$_/software/python/cache",
@@ -67,10 +73,14 @@ def main():
                     "evt": "mage-post-proc {} &> {log}",
                     "pdf": "{} &> {log}",
                 },
-                "execenv": {
-                    "cmd": "shifter",
-                    "arg": "--image=legendexp/legend-base:private",
-                },
+                "execenv": [
+                    "shifter",
+                    "--image",
+                    "legendexp/legend-software:latest",
+                    "--volume $_/inputs/simprod/MaGe:/private",
+                    "--env MESHFILESPATH=/private/data/legendgeometry/stl_files",
+                    "--env MAGERESULTS=/private/data/legendgeometry",
+                ],
             }
         }
     }
@@ -87,6 +97,16 @@ def main():
     os.system(
         f"git clone {repo_metadata[0]} {tmp_path} "
         f"--branch {repo_metadata[1]} --recurse-submodules"
+    )
+
+    # clone and configure MaGe
+    os.system(
+        f"git clone {repo_mage[0]} {tmp_path}/simprod/MaGe --branch {repo_mage[1]}"
+    )
+    os.system(
+        f"cd {tmp_path}/simprod/MaGe/data/legendgeometry && "
+        "ln -s . config_files && "
+        "ln -s ../../source/legendgeometry/stl_files ."
     )
 
 
