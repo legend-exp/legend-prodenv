@@ -69,7 +69,7 @@ def main():
                 },
                 "runcmd": {
                     "ver": "MaGe {input} &> {log}",
-                    "raw": "MaGe {input} &> {log}",
+                    "raw": "MaGe {input.macro} &> {log}",
                     "evt": "mage-post-proc {} &> {log}",
                     "pdf": "{} &> {log}",
                 },
