@@ -68,9 +68,8 @@ def main():
                     },
                 },
                 "runcmd": {
-                    "ver": "MaGe {input} &> {log}",
-                    "raw": "MaGe {input.macro} &> {log}",
-                    "evt": "mage-post-proc {} &> {log}",
+                    "ver": "$_/workflow/scripts/MaGe.sh {input.macro} {log}",
+                    "raw": "$_/workflow/scripts/MaGe.sh {input.macro} {log}",
                     "pdf": "{} &> {log}",
                 },
                 "execenv": [
