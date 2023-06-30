@@ -35,7 +35,10 @@ def main():
             "l200a": {
                 "benchmark": {
                     "enabled": False,
-                    "n_primaries": 5000,
+                    "n_primaries": {
+                        "ver": 10000,
+                        "raw": 5000,
+                    },
                 },
                 "paths": {
                     "simflow": "$_/workflow",
