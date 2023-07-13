@@ -29,71 +29,19 @@ def main():
     path_cycle = Path(os.getenv("PRODENV")) / args.rpath
     path_cycle.mkdir(parents=True)
 
-    # Create json config file
-    config_file = {
-        "setups": {
-            "l200a": {
-                "benchmark": {
-                    "enabled": False,
-                    "n_primaries": {
-                        "ver": 10000,
-                        "raw": 5000,
-                    },
-                },
-                "paths": {
-                    "simflow": "$_/workflow",
-                    "metadata": "$_/inputs",
-                    "config": "$_/inputs/simprod/config",
-                    "tier_ver": "$_/generated/tier/ver",
-                    "tier_raw": "$_/generated/tier/raw",
-                    "tier_evt": "$_/generated/tier/evt",
-                    "tier_pdf": "$_/generated/tier/pdf",
-                    "macros": "$_/generated/macros",
-                    "plt": "$_/generated/plt",
-                    "log": "$_/generated/log",
-                    "benchmarks": "$_/generated/benchmarks",
-                    "src": "$_/software/python/src",
-                    "install": "$_/software/python/install",
-                    "cache": "$_/software/python/cache",
-                },
-                "filetypes": {
-                    "input": {
-                        "ver": ".mac",
-                        "raw": ".mac",
-                        "evt": ".root",
-                        "pdf": ".root",
-                    },
-                    "output": {
-                        "ver": ".root",
-                        "raw": ".root",
-                        "evt": ".root",
-                        "pdf": ".root",
-                    },
-                },
-                "runcmd": {
-                    "ver": "$_/workflow/scripts/MaGe.sh {input.macro} {log}",
-                    "raw": "$_/workflow/scripts/MaGe.sh {input.macro} {log}",
-                    "pdf": "{} &> {log}",
-                },
-                "execenv": [
-                    "shifter",
-                    "--image",
-                    "legendexp/legend-software:latest",
-                    "--volume $_/inputs/simprod/MaGe:/private",
-                    "--env MESHFILESPATH=/private/data/legendgeometry/stl_files",
-                    "--env MAGERESULTS=/private/data/legendgeometry",
-                ],
-            }
-        }
-    }
+    # clone legend-simflow
+    os.system(
+        f"git clone {repo_simflow[0]} {str(path_cycle / 'workflow')} --branch {repo_simflow[1]}"
+    )
 
-    with Path.open(path_cycle / "config.json", "w") as outfile:
-        json.dump(config_file, outfile, ensure_ascii=False, indent=4)
+    # copy default config file
+    default_cfg = path_cycle / "workflow/templates/default.json"
+    os.system(f"cp {default_cfg} {path_cycle}/config.json")
 
-    tmp_path = config_file["setups"]["l200a"]["paths"]["simflow"]
-    tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
-    os.system(f"git clone {repo_simflow[0]} {tmp_path} --branch {repo_simflow[1]}")
+    with default_cfg.open() as f:
+        config_file = json.load(f)
 
+    # clone metadata
     tmp_path = config_file["setups"]["l200a"]["paths"]["metadata"]
     tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
     os.system(
