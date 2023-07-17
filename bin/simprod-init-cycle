@@ -42,7 +42,7 @@ def main():
         config_file = json.load(f)
 
     # clone metadata
-    tmp_path = config_file["setups"]["l200a"]["paths"]["metadata"]
+    tmp_path = config_file["paths"]["metadata"]
     tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
     os.system(
         f"git clone {repo_metadata[0]} {tmp_path} "
