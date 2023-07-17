@@ -21,7 +21,7 @@ condaenv=$(snakemake-mambaforge3/bin/mamba info --quiet --envs | grep '^snakemak
 
 # make exes visible
 ln -fs "$condaenv/bin/snakemake" bin/
-ln -fs "$condaenv/bin/python3" bin/python3-snakemake
+ln -fs "$condaenv/bin/python3" bin/
 ln -fs "$condaenv/bin/panoptes" bin/
 
 # cleanup
