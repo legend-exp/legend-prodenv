@@ -37,7 +37,7 @@ def main():
             "l200": {
                 "paths": {
                     "tier_daq": "",
-                    "dataflow": "$_/dataflow",
+                    "dataflow": "$_/workflow",
                     "metadata": "$_/inputs",
                     "config": "$_/inputs/dataprod/config",
                     "par_overwrite": "$_/inputs/dataprod/overrides",
@@ -91,7 +91,7 @@ def main():
             f"{tmp_path}/pylegendmeta --branch {repo_pylegendmeta[1]}"
         )
 
-    tmp_path = config_file["setups"]["l200"]["paths"]["dataflow"]
+    tmp_path = config_file["setups"]["l200"]["paths"]["workflow"]
     tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
     os.system(f"git clone {repo_dataflow[0]} {tmp_path} --branch {repo_dataflow[1]}")
 
