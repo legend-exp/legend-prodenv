@@ -31,7 +31,7 @@ def main():
 
     # clone legend-simflow
     os.system(
-        f"git clone {repo_simflow[0]} {str(path_cycle / 'workflow')} --branch {repo_simflow[1]}"
+        f"git clone {repo_simflow[0]} {path_cycle / 'workflow'!s} --branch {repo_simflow[1]}"
     )
 
     # copy default config file

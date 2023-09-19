@@ -42,11 +42,13 @@ def main():
         subprocess.run(
             [*(exec_cmd.split()), "-B", xdg_runtime_dir, exec_arg, *args.command],
             env={"PYTHONUSERBASE": path_install},
+            check=True,
         )
     else:
         subprocess.run(
             [*(exec_cmd.split()), exec_arg, *args.command],
             env={"PYTHONUSERBASE": path_install},
+            check=True,
         )
 
 

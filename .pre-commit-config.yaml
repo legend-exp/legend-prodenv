@@ -26,29 +26,29 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: "v0.0.270"
+  rev: "v0.0.290"
   hooks:
     - id: ruff
       args: ["--fix", "--show-fixes", "--exit-non-zero-on-fix"]
 
 - repo: https://github.com/psf/black
-  rev: "23.3.0"
+  rev: "23.9.1"
   hooks:
   - id: black-jupyter
 
 - repo: https://github.com/asottile/setup-cfg-fmt
-  rev: "v2.2.0"
+  rev: "v2.4.0"
   hooks:
   - id: setup-cfg-fmt
 
 - repo: https://github.com/codespell-project/codespell
-  rev: "v2.2.4"
+  rev: "v2.2.5"
   hooks:
   - id: codespell
     args: ["-L", "nd,unparseable,compiletime"]
 
 - repo: https://github.com/shellcheck-py/shellcheck-py
-  rev: "v0.9.0.2"
+  rev: "v0.9.0.5"
   hooks:
   - id: shellcheck
 
@@ -60,7 +60,7 @@ repos:
   - id: rst-inline-touching-normal
 
 - repo: https://github.com/pre-commit/mirrors-prettier
-  rev: "v3.0.0-alpha.9-for-vscode"
+  rev: "v3.0.3"
   hooks:
     - id: prettier
       types_or: [json]
