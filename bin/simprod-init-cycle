@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import string
+from pathlib import Path
+
+repo_simflow = ("git@github.com:legend-exp/legend-simflow.git", "main")
+repo_metadata = ("git@github.com:legend-exp/legend-metadata.git", "main")
+repo_mage = ("git@github.com:mppmu/MaGe.git", "main")
+
+
+def main():
+    # check existence of env vars
+    if not os.getenv("PRODENV"):
+        msg = "source setup.sh before continuing"
+        raise RuntimeError(msg)
+
+    parser = argparse.ArgumentParser(description="Initialize a new production cycle")
+    parser.add_argument(
+        "rpath",
+        help="relative path of directory in which the production cycle will be created",
+        default="",
+    )
+    args = parser.parse_args()
+
+    path_cycle = Path(os.getenv("PRODENV")) / args.rpath
+    path_cycle.mkdir(parents=True)
+
+    # clone legend-simflow
+    os.system(
+        f"git clone {repo_simflow[0]} {path_cycle / 'workflow'!s} --branch {repo_simflow[1]}"
+    )
+
+    # copy default config file
+    default_cfg = path_cycle / "workflow/templates/default.json"
+    os.system(f"cp {default_cfg} {path_cycle}/config.json")
+
+    with default_cfg.open() as f:
+        config_file = json.load(f)
+
+    # clone metadata
+    tmp_path = config_file["paths"]["metadata"]
+    tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
+    os.system(
+        f"git clone {repo_metadata[0]} {tmp_path} "
+        f"--branch {repo_metadata[1]} --recurse-submodules"
+    )
+
+    # clone and configure MaGe
+    os.system(
+        f"git clone {repo_mage[0]} {tmp_path}/simprod/MaGe --branch {repo_mage[1]}"
+    )
+    os.system(
+        f"cd {tmp_path}/simprod/MaGe/data/legendgeometry && "
+        "ln -s . config_files && "
+        "ln -s ../../source/legendgeometry/stl_files ."
+    )
+
+
+if __name__ == "__main__":
+    main()
