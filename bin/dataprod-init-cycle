@@ -37,7 +37,7 @@ def main():
             "l200": {
                 "paths": {
                     "tier_daq": "",
-                    "dataflow": "$_/workflow",
+                    "workflow": "$_/workflow",
                     "metadata": "$_/inputs",
                     "config": "$_/inputs/dataprod/config",
                     "par_overwrite": "$_/inputs/dataprod/overrides",
