@@ -8,9 +8,9 @@ import string
 from pathlib import Path
 
 repo_pygama = ("git@github.com:legend-exp/pygama.git", "main")
-repo_pylegendmeta = ("https://github.com/legend-exp/pylegendmeta.git", "main")
+repo_pylegendmeta = ("git@github.com:legend-exp/pylegendmeta.git", "main")
 repo_dataflow = ("git@github.com:legend-exp/legend-dataflow.git", "main")
-repo_metadata = ("https://github.com/legend-exp/legend-metadata.git", "main")
+repo_metadata = ("git@github.com:legend-exp/legend-metadata.git", "main")
 
 
 def main():
