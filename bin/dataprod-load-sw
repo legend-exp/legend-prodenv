@@ -41,13 +41,19 @@ def main():
     if xdg_runtime_dir:
         subprocess.run(
             [*(exec_cmd.split()), "-B", xdg_runtime_dir, exec_arg, *args.command],
-            env={"PYTHONUSERBASE": path_install},
+            env={
+                "PYTHONUSERBASE": path_install,
+                "APPTAINERENV_APPEND_PATH": f":{path_install}/bin",
+            },
             check=True,
         )
     else:
         subprocess.run(
             [*(exec_cmd.split()), exec_arg, *args.command],
-            env={"PYTHONUSERBASE": path_install},
+            env={
+                "PYTHONUSERBASE": path_install,
+                "APPTAINERENV_APPEND_PATH": f":{path_install}/bin",
+            },
             check=True,
         )
 
