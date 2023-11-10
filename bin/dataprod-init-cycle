@@ -31,50 +31,17 @@ def main():
     path_cycle = Path(os.getenv("PRODENV")) / args.rpath
     path_cycle.mkdir(parents=True)
 
-    # Create json config file
-    config_file = {
-        "setups": {
-            "l200": {
-                "paths": {
-                    "tier_daq": "",
-                    "workflow": "$_/workflow",
-                    "metadata": "$_/inputs",
-                    "config": "$_/inputs/dataprod/config",
-                    "par_overwrite": "$_/inputs/dataprod/overrides",
-                    "chan_map": "$_/inputs/hardware/configuration",
-                    "detector_db": "$_/inputs/hardware/detectors",
-                    "tier": "$_/generated/tier",
-                    "tier_raw": "$_/generated/tier/raw",
-                    "tier_tcm": "$_/generated/tier/tcm",
-                    "tier_dsp": "$_/generated/tier/dsp",
-                    "tier_hit": "$_/generated/tier/hit",
-                    "tier_evt": "$_/generated/tier/evt",
-                    "par": "$_/generated/par",
-                    "par_raw": "$_/generated/par/raw",
-                    "par_tcm": "$_/generated/par/tcm",
-                    "par_dsp": "$_/generated/par/dsp",
-                    "par_hit": "$_/generated/par/hit",
-                    "par_evt": "$_/generated/par/evt",
-                    "plt": "$_/generated/plt",
-                    "log": "$_/generated/log",
-                    "tmp_plt": "$_/generated/tmp/plt",
-                    "tmp_log": "$_/generated/tmp/log",
-                    "tmp_filelists": "$_/generated/tmp/filelists",
-                    "tmp_par": "$_/generated/tmp/par",
-                    "src": "$_/software/python/src",
-                    "install": "$_/software/python/install",
-                    "cache": "$_/software/python/cache",
-                },
-                "execenv": {
-                    "cmd": "apptainer run",
-                    "arg": "/data2/public/prodenv/containers/legendexp_legend-base_latest.sif",
-                },
-            }
-        }
-    }
+    # clone legend-dataflow
+    os.system(
+        f"git clone {repo_dataflow[0]} {path_cycle / 'workflow'!s} --branch {repo_dataflow[1]}"
+    )
 
-    with Path.open(path_cycle / "config.json", "w") as outfile:
-        json.dump(config_file, outfile, ensure_ascii=False, indent=4)
+    # copy default config file
+    default_cfg = path_cycle / "workflow/templates/config.json"
+    os.system(f"cp {default_cfg} {path_cycle}/config.json")
+
+    with default_cfg.open() as f:
+        config_file = json.load(f)
 
     if args.c:
         tmp_path = config_file["setups"]["l200"]["paths"]["src"]
@@ -91,9 +58,7 @@ def main():
             f"{tmp_path}/pylegendmeta --branch {repo_pylegendmeta[1]}"
         )
 
-    tmp_path = config_file["setups"]["l200"]["paths"]["workflow"]
-    tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
-    os.system(f"git clone {repo_dataflow[0]} {tmp_path} --branch {repo_dataflow[1]}")
+    
 
     tmp_path = config_file["setups"]["l200"]["paths"]["metadata"]
     tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
