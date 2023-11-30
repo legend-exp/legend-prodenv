@@ -8,10 +8,6 @@ import shutil
 import string
 from pathlib import Path
 
-default_pygama_distro = "pygama~=1.3"
-default_pylegendmeta_distro = "pylegendmeta~=0.7"
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="Install user software in data production environment"
@@ -38,6 +34,12 @@ def main():
     path_src = config_dic["setups"]["l200"]["paths"]["src"]
     path_install = config_dic["setups"]["l200"]["paths"]["install"]
     path_cache = config_dic["setups"]["l200"]["paths"]["cache"]
+    
+    default_pygama_distro = config_dic["setups"]["l200"]["pkg_versions"]["pygama"] 
+    default_pylegendmeta_distro = config_dic["setups"]["l200"]["pkg_versions"]["pylegendmeta"]
+    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"]["dspeed"] 
+    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"]["legend-pydataobj"]
+    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"]["legend-daq2lh5"] 
 
     exec_cmd = string.Template(exec_cmd).substitute({"_": config_file_dir})
     exec_arg = string.Template(exec_arg).substitute({"_": config_file_dir})
@@ -61,10 +63,27 @@ def main():
     else:
         pylegendmeta_distro = default_pylegendmeta_distro
 
+    if (path_src / "dspeed").exists():
+        dspeed_distro = path_src / "dspeed"
+    else:
+        dspeed_distro = default_dspeed_distro
+
+    if (path_src / "legend-pydataobj").exists():
+        legend_dataobj_distro = path_src / "legend-pydataobj"
+    else:
+        legend_dataobj_distro = default_legend_dataobj_distro
+
+    if (path_src / "legend-daq2lh5").exists():
+        daq2lh5_distro = path_src / "legend-daq2lh5"
+    else:
+        daq2lh5_distro = default_daq2lh5_distro
+
+
     os.system(
         f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
         f"{exec_cmd} {exec_arg} python3 -B -m pip install "
-        f"{pygama_distro} {pylegendmeta_distro}"
+        f"{pygama_distro} {pylegendmeta_distro} {dspeed_distro} "
+        f"{legend_dataobj_distro} {daq2lh5_distro}"
     )
 
 
