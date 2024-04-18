@@ -58,8 +58,6 @@ def main():
             f"{tmp_path}/pylegendmeta --branch {repo_pylegendmeta[1]}"
         )
 
-    
-
     tmp_path = config_file["setups"]["l200"]["paths"]["metadata"]
     tmp_path = string.Template(tmp_path).substitute({"_": path_cycle})
     os.system(

@@ -8,6 +8,7 @@ import shutil
 import string
 from pathlib import Path
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Install user software in data production environment"
@@ -34,12 +35,18 @@ def main():
     path_src = config_dic["setups"]["l200"]["paths"]["src"]
     path_install = config_dic["setups"]["l200"]["paths"]["install"]
     path_cache = config_dic["setups"]["l200"]["paths"]["cache"]
-    
-    default_pygama_distro = config_dic["setups"]["l200"]["pkg_versions"]["pygama"] 
-    default_pylegendmeta_distro = config_dic["setups"]["l200"]["pkg_versions"]["pylegendmeta"]
-    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"]["dspeed"] 
-    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"]["legend-pydataobj"]
-    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"]["legend-daq2lh5"] 
+
+    default_pygama_distro = config_dic["setups"]["l200"]["pkg_versions"]["pygama"]
+    default_pylegendmeta_distro = config_dic["setups"]["l200"]["pkg_versions"][
+        "pylegendmeta"
+    ]
+    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"]["dspeed"]
+    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"][
+        "legend-pydataobj"
+    ]
+    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"][
+        "legend-daq2lh5"
+    ]
 
     exec_cmd = string.Template(exec_cmd).substitute({"_": config_file_dir})
     exec_arg = string.Template(exec_arg).substitute({"_": config_file_dir})
@@ -77,7 +84,6 @@ def main():
         daq2lh5_distro = path_src / "legend-daq2lh5"
     else:
         daq2lh5_distro = default_daq2lh5_distro
-
 
     os.system(
         f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
