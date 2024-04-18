@@ -40,13 +40,15 @@ def main():
     default_pylegendmeta_distro = config_dic["setups"]["l200"]["pkg_versions"][
         "pylegendmeta"
     ]
-    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"]["dspeed"]
-    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"][
-        "legend-pydataobj"
-    ]
-    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"][
-        "legend-daq2lh5"
-    ]
+    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"].get(
+        "dspeed", None
+    )
+    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"].get(
+        "legend-pydataobj", None
+    )
+    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"].get(
+        "legend-daq2lh5", None
+    )
 
     exec_cmd = string.Template(exec_cmd).substitute({"_": config_file_dir})
     exec_arg = string.Template(exec_arg).substitute({"_": config_file_dir})
@@ -85,11 +87,18 @@ def main():
     else:
         daq2lh5_distro = default_daq2lh5_distro
 
+    pkg_list = f"{pygama_distro} {pylegendmeta_distro}"
+
+    if dspeed_distro is not None:
+        pkg_list += f" {dspeed_distro}"
+    if legend_dataobj_distro is not None:
+        pkg_list += f" {legend_dataobj_distro}"
+    if daq2lh5_distro is not None:
+        pkg_list += f" {daq2lh5_distro}"
+
     os.system(
         f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
-        f"{exec_cmd} {exec_arg} python3 -B -m pip install "
-        f"{pygama_distro} {pylegendmeta_distro} {dspeed_distro} "
-        f"{legend_dataobj_distro} {daq2lh5_distro}"
+        f"{exec_cmd} {exec_arg} python3 -B -m pip install {pkg_list}"
     )
 
 
