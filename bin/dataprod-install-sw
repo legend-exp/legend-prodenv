@@ -87,19 +87,21 @@ def main():
     else:
         daq2lh5_distro = default_daq2lh5_distro
 
-    pkg_list = f"{pygama_distro} {pylegendmeta_distro}"
+    pkg_list = f"'{pygama_distro}' '{pylegendmeta_distro}'"
 
     if dspeed_distro is not None:
-        pkg_list += f" {dspeed_distro}"
+        pkg_list += f" '{dspeed_distro}'"
     if legend_dataobj_distro is not None:
-        pkg_list += f" {legend_dataobj_distro}"
+        pkg_list += f" '{legend_dataobj_distro}'"
     if daq2lh5_distro is not None:
-        pkg_list += f" {daq2lh5_distro}"
+        pkg_list += f" '{daq2lh5_distro}'"
 
-    os.system(
+    cmd_expr = (
         f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
         f"{exec_cmd} {exec_arg} python3 -B -m pip install {pkg_list}"
     )
+    print("INFO: running:", cmd_expr)
+    os.system(cmd_expr)
 
 
 if __name__ == "__main__":

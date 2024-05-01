@@ -40,10 +40,11 @@ def main():
     xdg_runtime_dir = os.getenv("XDG_RUNTIME_DIR")
     if xdg_runtime_dir:
         subprocess.run(
-            [*(exec_cmd.split()), "-B", xdg_runtime_dir, exec_arg, *args.command],
+            [*(exec_cmd.split()), exec_arg, *args.command],
             env={
                 "PYTHONUSERBASE": path_install,
                 "APPTAINERENV_APPEND_PATH": f":{path_install}/bin",
+                "APPTAINER_BINDPATH": xdg_runtime_dir,
             },
             check=True,
         )
@@ -53,6 +54,7 @@ def main():
             env={
                 "PYTHONUSERBASE": path_install,
                 "APPTAINERENV_APPEND_PATH": f":{path_install}/bin",
+                "APPTAINER_BINDPATH": xdg_runtime_dir,
             },
             check=True,
         )
