@@ -96,6 +96,16 @@ def main():
     if daq2lh5_distro is not None:
         pkg_list += f" '{daq2lh5_distro}'"
 
+    for pkg, pkg_version in config_dic["setups"]["l200"]["pkg_versions"].items():
+        if pkg not in [
+            "dspeed",
+            "pygama",
+            "legend-daq2lh5",
+            "legend-pydataobj",
+            "pylegendmeta",
+        ]:
+            pkg_list += f" '{pkg_version}'"
+
     cmd_expr = (
         f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
         f"{exec_cmd} {exec_arg} python3 -B -m pip install {pkg_list}"
