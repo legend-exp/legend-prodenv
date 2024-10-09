@@ -15,7 +15,7 @@ snakemake-mambaforge3/bin/mamba create --yes \
     --name snakemake \
     --channel conda-forge \
     --channel bioconda \
-    -- snakemake-minimal panoptes-ui jinja2 uproot
+    -- snakemake-minimal==8.3.* panoptes-ui jinja2 uproot pygments graphviz
 
 condaenv=$(snakemake-mambaforge3/bin/mamba info --quiet --envs | grep '^snakemake */' | awk '{print $2}')
 
@@ -23,6 +23,7 @@ condaenv=$(snakemake-mambaforge3/bin/mamba info --quiet --envs | grep '^snakemak
 ln -fs "$condaenv/bin/snakemake" bin/
 ln -fs "$condaenv/bin/python3" bin/
 ln -fs "$condaenv/bin/panoptes" bin/
+ln -fs "$condaenv/bin/graphviz" bin/
 
 # cleanup
 rm "Mambaforge-$system.sh"
