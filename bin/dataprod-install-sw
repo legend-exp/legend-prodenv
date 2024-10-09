@@ -8,6 +8,7 @@ import shutil
 import string
 from pathlib import Path
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Install user software in data production environment"
@@ -34,12 +35,18 @@ def main():
     path_src = config_dic["setups"]["l200"]["paths"]["src"]
     path_install = config_dic["setups"]["l200"]["paths"]["install"]
     path_cache = config_dic["setups"]["l200"]["paths"]["cache"]
-    
-    default_pygama_distro = config_dic["setups"]["l200"]["pkg_versions"]["pygama"] 
-    default_pylegendmeta_distro = config_dic["setups"]["l200"]["pkg_versions"]["pylegendmeta"]
-    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"]["dspeed"] 
-    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"]["legend-pydataobj"]
-    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"]["legend-daq2lh5"] 
+
+    default_pygama_distro = config_dic["setups"]["l200"]["pkg_versions"]["pygama"]
+    default_pylegendmeta_distro = config_dic["setups"]["l200"]["pkg_versions"][
+        "pylegendmeta"
+    ]
+    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"]["dspeed"]
+    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"][
+        "legend-pydataobj"
+    ]
+    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"][
+        "legend-daq2lh5"
+    ]
 
     exec_cmd = string.Template(exec_cmd).substitute({"_": config_file_dir})
     exec_arg = string.Template(exec_arg).substitute({"_": config_file_dir})
@@ -78,12 +85,17 @@ def main():
     else:
         daq2lh5_distro = default_daq2lh5_distro
 
+    pip_string = f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
+    pip_string += f"{exec_cmd} {exec_arg} python3 -B -m pip install "
+    pip_string += f"{pygama_distro} {pylegendmeta_distro} {dspeed_distro} "
+    pip_string += f"{legend_dataobj_distro} {daq2lh5_distro}"
+    
+    for pkg, pkg_version in config_dic["setups"]["l200"]["pkg_versions"].items():
+        if pkg not in ["dspeed", "pygama", "legend-daq2lh5", "legend-pydataobj", "pylegendmeta"]:
+            pip_string += f" {pkg_version}"
 
     os.system(
-        f"PYTHONUSERBASE={path_install} PIP_CACHE_DIR={path_cache} "
-        f"{exec_cmd} {exec_arg} python3 -B -m pip install "
-        f"{pygama_distro} {pylegendmeta_distro} {dspeed_distro} "
-        f"{legend_dataobj_distro} {daq2lh5_distro}"
+        pip_string
     )
 
 
