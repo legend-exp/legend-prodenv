@@ -97,7 +97,13 @@ def main():
         pkg_list += f" '{daq2lh5_distro}'"
 
     for pkg, pkg_version in config_dic["setups"]["l200"]["pkg_versions"].items():
-        if pkg not in ["dspeed", "pygama", "legend-daq2lh5", "legend-pydataobj", "pylegendmeta"]:
+        if pkg not in [
+            "dspeed",
+            "pygama",
+            "legend-daq2lh5",
+            "legend-pydataobj",
+            "pylegendmeta",
+        ]:
             pkg_list += f" '{pkg_version}'"
 
     cmd_expr = (
