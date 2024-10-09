@@ -15,7 +15,7 @@ snakemake-mambaforge3/bin/mamba create --yes \
     --name snakemake \
     --channel conda-forge \
     --channel bioconda \
-    -- snakemake-minimal==8.3.* panoptes-ui jinja2 uproot pygments graphviz
+    -- 'python<3.12' 'snakemake>8.3' panoptes-ui jinja2 uproot
 
 condaenv=$(snakemake-mambaforge3/bin/mamba info --quiet --envs | grep '^snakemake */' | awk '{print $2}')
 
