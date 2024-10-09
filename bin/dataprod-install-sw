@@ -40,15 +40,6 @@ def main():
     default_pylegendmeta_distro = config_dic["setups"]["l200"]["pkg_versions"][
         "pylegendmeta"
     ]
-<<<<<<< HEAD
-    default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"]["dspeed"]
-    default_legend_dataobj_distro = config_dic["setups"]["l200"]["pkg_versions"][
-        "legend-pydataobj"
-    ]
-    default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"][
-        "legend-daq2lh5"
-    ]
-=======
     default_dspeed_distro = config_dic["setups"]["l200"]["pkg_versions"].get(
         "dspeed", None
     )
@@ -58,7 +49,6 @@ def main():
     default_daq2lh5_distro = config_dic["setups"]["l200"]["pkg_versions"].get(
         "legend-daq2lh5", None
     )
->>>>>>> c4dd9cbe75e44c130c4788aa064e4d63e4f63671
 
     exec_cmd = string.Template(exec_cmd).substitute({"_": config_file_dir})
     exec_arg = string.Template(exec_arg).substitute({"_": config_file_dir})
